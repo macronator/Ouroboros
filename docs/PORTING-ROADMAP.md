@@ -113,6 +113,13 @@ The one missing piece everything else stands on.
   from inventory when HP/MP drop to a threshold, HP first, one use per tick, re-use paced
   by `MinInterval` so a single low reading doesn't drain the stack. Off by default with empty
   item lists (nothing consumed unasked); `/pots` toggles, `/healitem`/`/manaitem` register names.
+- [x] UI shell (MVVM). `MainWindow` is now a `TabControl` shell bound to a `MainWindowViewModel`,
+  with each tab its own designer-ready `UserControl` under `Controls/Views/` (design-time data
+  via `d:DataContext`), matching the pattern `OptionsWindow` already set:
+  - **Dashboard** — live per-client status cards bound to `ClientStatusViewModel` (replaces the
+    old code-behind string dump; timer refreshes the view-model, XAML binds).
+  - **Automation** — two-way toggles for combat/support/consumables on the selected client.
+  - **Packet Console** / **Waypoints** — scaffolded UserControls + view-models, ready to fill in.
 - [ ] Phase 6 — dual-use game-process layer
 
 ## Live-test findings (in-game on 7.41)

@@ -1,13 +1,16 @@
-﻿<Window x:Class="Ouroboros.Controls.MainWindow"
+<Window x:Class="Ouroboros.Controls.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:viewModel="clr-namespace:Ouroboros.ViewModel"
+        xmlns:views="clr-namespace:Ouroboros.Controls.Views"
         Background="{DynamicResource MaterialDesignPaper}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         FontFamily="{materialDesign:MaterialDesignFont}"
         mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=viewModel:MainWindowViewModel, IsDesignTimeCreatable=True}"
         Title="Ouroboros"
         Height="550"
         Width="900"
@@ -61,18 +64,22 @@
                        FontSize="16"
                        Grid.Row="0" />
 
-            <!-- Main content -->
-            <ContentControl x:Name="MainContentControl"
-                            Grid.Row="1">
-                <ScrollViewer VerticalScrollBarVisibility="Auto"
-                              Padding="16">
-                    <TextBlock x:Name="StatusText"
-                               FontFamily="Consolas"
-                               FontSize="13"
-                               Text="No client connected. Launch a client and log in." />
-                </ScrollViewer>
-            </ContentControl>
-
+            <!-- Main content: one tab per feature area, each its own designer-ready UserControl -->
+            <TabControl Grid.Row="1"
+                        Style="{StaticResource MaterialDesignTabControl}">
+                <TabItem Header="Dashboard">
+                    <views:DashboardView />
+                </TabItem>
+                <TabItem Header="Automation">
+                    <views:AutomationView DataContext="{Binding Automation}" />
+                </TabItem>
+                <TabItem Header="Packet Console">
+                    <views:PacketConsoleView DataContext="{Binding PacketConsole}" />
+                </TabItem>
+                <TabItem Header="Waypoints">
+                    <views:WaypointsView DataContext="{Binding Waypoints}" />
+                </TabItem>
+            </TabControl>
         </Grid>
     </materialDesign:DrawerHost>
 </Window>

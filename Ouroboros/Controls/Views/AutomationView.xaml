@@ -1,0 +1,51 @@
+<UserControl x:Class="Ouroboros.Controls.Views.AutomationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:viewModel="clr-namespace:Ouroboros.ViewModel"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=viewModel:AutomationViewModel, IsDesignTimeCreatable=True}"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
+
+    <StackPanel Margin="20"
+                IsEnabled="{Binding HasClient}">
+        <TextBlock Text="Automation"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   Margin="0,0,0,4" />
+        <TextBlock Text="Toggles apply to the selected client. Configure thresholds and item names via chat commands (/healitem, /manaitem)."
+                   TextWrapping="Wrap"
+                   Opacity="0.7"
+                   Margin="0,0,0,16" />
+
+        <StackPanel Orientation="Horizontal"
+                    Margin="0,6">
+            <CheckBox Style="{StaticResource MaterialDesignSwitchAccentToggleButton}"
+                      IsChecked="{Binding Combat}" />
+            <TextBlock Text="Combat auto-attack"
+                       VerticalAlignment="Center"
+                       Margin="12,0,0,0" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal"
+                    Margin="0,6">
+            <CheckBox Style="{StaticResource MaterialDesignSwitchAccentToggleButton}"
+                      IsChecked="{Binding Support}" />
+            <TextBlock Text="Heal / buff support"
+                       VerticalAlignment="Center"
+                       Margin="12,0,0,0" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal"
+                    Margin="0,6">
+            <CheckBox Style="{StaticResource MaterialDesignSwitchAccentToggleButton}"
+                      IsChecked="{Binding Consumables}" />
+            <TextBlock Text="Consumable auto-use (potions / mana)"
+                       VerticalAlignment="Center"
+                       Margin="12,0,0,0" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>

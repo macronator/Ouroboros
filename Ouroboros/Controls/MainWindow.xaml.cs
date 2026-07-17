@@ -1,65 +1,41 @@
-﻿using System.Text;
 using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Ouroboros.Defintions;
 using Ouroboros.Services.Factories;
 using Ouroboros.Services.Managers;
+using Ouroboros.ViewModel;
 
 namespace Ouroboros.Controls;
 
 /// <summary>
-///     Interaction logic for MainWindow.xaml
+///     Interaction logic for MainWindow.xaml. The window is a thin shell: a <see cref="MainWindowViewModel" />
+///     holds the bound state and the feature tabs render it. A UI-thread timer refreshes the view-model from
+///     the live client snapshot; all display logic lives in the view-models and XAML, not here.
 /// </summary>
 public sealed partial class MainWindow
 {
     private readonly ClientManager ClientManager;
     private readonly DaWindowFactory DaWindowFactory;
+    private readonly MainWindowViewModel ViewModel;
 
     public MainWindow(DaWindowFactory daWindowFactory, ClientManager clientManager)
     {
         DaWindowFactory = daWindowFactory;
         ClientManager = clientManager;
+        ViewModel = new MainWindowViewModel();
 
         InitializeComponent();
 
-        //poll the live client state and render a simple status panel
+        DataContext = ViewModel;
+
+        //clear the design sample and show the real (initially empty) state before the first tick
+        ViewModel.Refresh(ClientManager.ActiveClients);
+
+        //poll the live client state and let the bindings update the tabs
         var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
-        timer.Tick += (_, _) => UpdateStatus();
+        timer.Tick += (_, _) => ViewModel.Refresh(ClientManager.ActiveClients);
         timer.Start();
-    }
-
-    private void UpdateStatus()
-    {
-        var clients = ClientManager.ActiveClients;
-
-        if (clients.Count == 0)
-        {
-            StatusText.Text = "No client connected. Launch a client and log in.";
-
-            return;
-        }
-
-        var builder = new StringBuilder();
-
-        foreach (var client in clients)
-        {
-            var vitals = client.Vitals;
-            var map = client.Aisling?.Map;
-            var position = client.ServerPoint;
-
-            builder.AppendLine(client.Aisling?.Name ?? "(character unknown)");
-            builder.AppendLine($"  HP {vitals.CurrentHp}/{vitals.MaximumHp} ({vitals.HealthPercent}%)   "
-                               + $"MP {vitals.CurrentMp}/{vitals.MaximumMp} ({vitals.ManaPercent}%)");
-            builder.AppendLine($"  Map: {map?.Name ?? "-"} [{(map is null ? "-" : map.Id)}]  @ ({position.X}, {position.Y})");
-            builder.AppendLine($"  Nearby monsters: {client.EntityManager.GetNearbyMonsters(null).Count}");
-            builder.AppendLine($"  Skills: {client.SkillBook.Snapshot().Count}   Spells: {client.SpellBook.Snapshot().Count}");
-            builder.AppendLine($"  Walking: {(client.Bot.Walker.Route is not null)}   "
-                               + $"Combat: {client.Bot.Combat.Enabled}   Support: {client.Bot.Support.Enabled}");
-            builder.AppendLine();
-        }
-
-        StatusText.Text = builder.ToString();
     }
 
     private async void LaunchBtn_Click(object sender, RoutedEventArgs e)
