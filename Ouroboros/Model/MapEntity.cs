@@ -1,4 +1,5 @@
-﻿using Chaos.Geometry.Abstractions;
+﻿using System.Diagnostics.CodeAnalysis;
+using Chaos.Geometry.Abstractions;
 using Ouroboros.Abstractions;
 using Ouroboros.Data;
 
@@ -22,6 +23,7 @@ public abstract class MapEntity : WorldEntity, IIdLocation
     /// <inheritdoc />
     public override MapEntityTrackers Trackers { get; }
 
+    [SetsRequiredMembers]
     protected MapEntity(Map map, int x, int y, MapEntityTrackers? trackers = null)
         : base(trackers ??= new MapEntityTrackers())
     {

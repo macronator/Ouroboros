@@ -1,4 +1,5 @@
-﻿using Ouroboros.Data;
+﻿using System.Diagnostics.CodeAnalysis;
+using Ouroboros.Data;
 
 namespace Ouroboros.Model;
 
@@ -6,7 +7,8 @@ public abstract class VisibleEntity : MapEntity, IEquatable<VisibleEntity>
 {
     public uint Id { get; }
     public ushort Sprite { get; init; }
-    
+
+    [SetsRequiredMembers]
     protected VisibleEntity(uint id, Map map, ushort sprite, int x, int y, MapEntityTrackers? trackers = null)
         : base(map, x, y, trackers)
     {

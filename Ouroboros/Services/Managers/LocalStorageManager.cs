@@ -43,6 +43,7 @@ public sealed class LocalStorageManager
         var fileName = $"{typeof(T).Name}.json";
         var path = Path.Combine(CONSTANTS.DATA_DIRECTORY, fileName);
 
+        Directory.CreateDirectory(CONSTANTS.DATA_DIRECTORY);
         JsonSerializerEx.Serialize(path, obj, JsonSerializerOptions);
     }
 
@@ -50,6 +51,8 @@ public sealed class LocalStorageManager
     {
         var fileName = $"{typeof(T).Name}.json";
         var path = Path.Combine(CONSTANTS.DATA_DIRECTORY, fileName);
+
+        Directory.CreateDirectory(CONSTANTS.DATA_DIRECTORY);
 
         return JsonSerializerEx.SerializeAsync(path, obj, JsonSerializerOptions);
     }

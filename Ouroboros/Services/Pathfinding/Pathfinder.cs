@@ -26,9 +26,9 @@ public sealed class Pathfinder
         PathNodes = new PathNode[Width, Height];
         PriortyQueue = new PriorityQueue<PathNode, int>(ushort.MaxValue);
 
-        NeighborIndexes = Enumerable.Range(0, 4)
-                                    .Shuffle()
-                                    .ToArray();
+        //explicit static call: .NET 10 added Enumerable.Shuffle, which collides with Chaos's extension
+        NeighborIndexes = EnumerableExtensions.Shuffle(Enumerable.Range(0, 4))
+                                              .ToArray();
         Sync = new AutoReleasingMonitor();
 
         //create nodes, assign walls
@@ -36,8 +36,10 @@ public sealed class Pathfinder
             for (var y = 0; y < Height; y++)
                 PathNodes[x, y] = new PathNode(x, y);
 
+        //a null tile means that cell's data hasn't been loaded yet — treat it as walkable rather than
+        //throwing (map tiles arrive over several MapData packets, or not at all without local .map files)
         foreach (var tile in map.Tiles.Flatten())
-            if (tile.IsWall)
+            if (tile is { IsWall: true })
                 PathNodes[tile.X, tile.Y].IsWall = true;
         
         foreach(var pt in blacklistedPoints)
@@ -97,8 +99,8 @@ public sealed class Pathfinder
     
     public Direction FindRandomDirection(IPoint start, PathfinderOptions options)
     {
-        var points = start.GenerateCardinalPoints()
-                          .Shuffle();
+        //explicit static call: .NET 10 added Enumerable.Shuffle, which collides with Chaos's extension
+        var points = EnumerableExtensions.Shuffle(start.GenerateCardinalPoints());
 
         foreach (var point in points)
         {

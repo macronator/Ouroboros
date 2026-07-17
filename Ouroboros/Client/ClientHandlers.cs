@@ -322,6 +322,10 @@ public sealed class ClientHandlers
         var args = PacketSerializer.Deserialize<PublicMessageArgs>(packet);
         serialized = args;
 
+        //intercept slash commands so they run locally instead of being sent as public chat
+        if (Client.Bot.Commands.TryHandle(args.Message, Client.Bot))
+            return HandlerResult.Canceled;
+
         return HandlerResult.Default;
     }
 

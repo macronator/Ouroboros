@@ -1,9 +1,11 @@
-﻿using Ouroboros.Data;
+﻿using System.Diagnostics.CodeAnalysis;
+using Ouroboros.Data;
 
 namespace Ouroboros.Model;
 
 public class GroundItem : VisibleEntity
 {
+    [SetsRequiredMembers]
     public GroundItem(
         uint id,
         Map map,

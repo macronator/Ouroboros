@@ -1,4 +1,5 @@
-﻿using Chaos.Common.Definitions;
+﻿using System.Diagnostics.CodeAnalysis;
+using Chaos.Common.Definitions;
 using Chaos.Geometry.Abstractions.Definitions;
 using Ouroboros.Data;
 
@@ -13,6 +14,7 @@ public abstract class Creature : VisibleEntity
     public virtual byte HealthPercent { get; set; } = 100;
 
     /// <inheritdoc />
+    [SetsRequiredMembers]
     protected Creature(
         uint id,
         Map map,

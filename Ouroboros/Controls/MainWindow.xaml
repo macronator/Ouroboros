@@ -63,7 +63,15 @@
 
             <!-- Main content -->
             <ContentControl x:Name="MainContentControl"
-                            Grid.Row="1" />
+                            Grid.Row="1">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              Padding="16">
+                    <TextBlock x:Name="StatusText"
+                               FontFamily="Consolas"
+                               FontSize="13"
+                               Text="No client connected. Launch a client and log in." />
+                </ScrollViewer>
+            </ContentControl>
 
         </Grid>
     </materialDesign:DrawerHost>

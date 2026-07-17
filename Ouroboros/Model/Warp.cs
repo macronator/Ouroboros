@@ -1,4 +1,5 @@
-﻿using Ouroboros.Data;
+﻿using System.Diagnostics.CodeAnalysis;
+using Ouroboros.Data;
 using Ouroboros.Utilities;
 
 namespace Ouroboros.Model;
@@ -8,6 +9,7 @@ public class Warp : MapEntity
     public IdLocation Destination { get; }
 
     /// <inheritdoc />
+    [SetsRequiredMembers]
     public Warp(
         Map map,
         int x,

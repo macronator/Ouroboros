@@ -1,6 +1,9 @@
 ﻿using System.IO;
 using Chaos.Common.Definitions;
 using Chaos.Cryptography;
+using Chaos.Geometry;
+using Chaos.Geometry.Abstractions;
+using Chaos.Geometry.Abstractions.Definitions;
 using Chaos.Networking.Entities.Server;
 using Chaos.Packets;
 using Chaos.Packets.Abstractions;
@@ -150,9 +153,11 @@ public sealed class ServerHandlers
         var args = PacketSerializer.Deserialize<MapLoadCompleteArgs>(packet);
         serialized = args;
 
-        Guard.Unreachable(Client.Aisling?.Map == null, "MapLoadComplete received before map was loaded.");
-        
-        Client.Pathfinder = new Pathfinder(Client.Aisling.Map);
+        var map = Client.Aisling?.Map
+                  ?? (Client.Temp.TryGetValue("InitialMap", out var initial) ? initial as Map : null);
+
+        if (map is not null)
+            Client.Pathfinder = new Pathfinder(map);
 
         return HandlerResult.Default;
     }
@@ -210,6 +215,13 @@ public sealed class ServerHandlers
         var args = PacketSerializer.Deserialize<CooldownArgs>(packet);
         serialized = args;
 
+        var cooldown = TimeSpan.FromSeconds(args.CooldownSecs);
+
+        if (args.IsSkill)
+            Client.SkillBook.StartCooldown(args.Slot, cooldown, DateTime.UtcNow);
+        else
+            Client.SpellBook.StartCooldown(args.Slot, cooldown, DateTime.UtcNow);
+
         return HandlerResult.Default;
     }
 
@@ -217,10 +229,12 @@ public sealed class ServerHandlers
     {
         var args = PacketSerializer.Deserialize<MapDataArgs>(packet);
         serialized = args;
-        
-        Guard.Unreachable(Client.Aisling?.Map == null, "MapData received before map was loaded.");
-        
-        Client.Aisling.Map.SetPartialData(args.CurrentYIndex, args.MapData);
+
+        //map data can arrive before the self-Aisling exists, while the map lives in Temp
+        var map = Client.Aisling?.Map
+                  ?? (Client.Temp.TryGetValue("InitialMap", out var initial) ? initial as Map : null);
+
+        map?.SetPartialData(args.CurrentYIndex, args.MapData);
 
         return HandlerResult.Default;
     }
@@ -286,11 +300,12 @@ public sealed class ServerHandlers
         var args = PacketSerializer.Deserialize<DisplayAislingArgs>(packet);
         serialized = args;
 
-        Guard.Unreachable(!Client.Id.HasValue, "DisplayAisling received before client id was set.");
+        //an aisling can't be placed until we know which map we're on
+        var map = Client.Aisling?.Map
+                  ?? (Client.Temp.TryGetValue("InitialMap", out var initial) ? initial as Map : null);
 
-        //var map = Client.Aisling?.Map ?? (Map)Client.Temp["InitialMap"];
-        
-        /*Client.EntityManager.Add();
+        if (map is null)
+            return HandlerResult.Default;
 
         var aisling = new Aisling(
             args.Id,
@@ -301,9 +316,18 @@ public sealed class ServerHandlers
             CreatureType.Aisling,
             args.Direction,
             args.Name);
-        
-        if(args.Id == Client.Id.Value)*/
-            
+
+        //if the serial matches ours, this is our own character; otherwise it's a nearby player
+        if (Client.Id == args.Id)
+        {
+            Client.Aisling = aisling;
+            Client.ServerPoint = new Point(args.X, args.Y);
+            Client.CompleteWarp(args.X, args.Y);
+        } else
+        {
+            Client.EntityManager.Remove(args.Id);
+            Client.EntityManager.Add(aisling);
+        }
 
         return HandlerResult.Default;
     }
@@ -353,6 +377,8 @@ public sealed class ServerHandlers
         var args = PacketSerializer.Deserialize<RemoveSkillFromPaneArgs>(packet);
         serialized = args;
 
+        Client.SkillBook.Remove(args.Slot);
+
         return HandlerResult.Default;
     }
 
@@ -360,6 +386,8 @@ public sealed class ServerHandlers
     {
         var args = PacketSerializer.Deserialize<AddSkillToPaneArgs>(packet);
         serialized = args;
+
+        Client.SkillBook.AddOrUpdate(args.Skill);
 
         return HandlerResult.Default;
     }
@@ -425,6 +453,8 @@ public sealed class ServerHandlers
         var args = PacketSerializer.Deserialize<RemoveSpellFromPaneArgs>(packet);
         serialized = args;
 
+        Client.SpellBook.Remove(args.Slot);
+
         return HandlerResult.Default;
     }
 
@@ -432,6 +462,8 @@ public sealed class ServerHandlers
     {
         var args = PacketSerializer.Deserialize<AddSpellToPaneArgs>(packet);
         serialized = args;
+
+        Client.SpellBook.AddOrUpdate(args.Spell);
 
         return HandlerResult.Default;
     }
@@ -441,8 +473,10 @@ public sealed class ServerHandlers
         var args = PacketSerializer.Deserialize<MapInfoArgs>(packet);
         serialized = args;
 
-        Guard.Unreachable(Client.Aisling?.Map == null, "MapInfo received before map was loaded.");
-        
+        //map is changing — remember the tile we left from so we can auto-learn the warp
+        if (Client.Aisling?.Map is { } previousMap && previousMap.Id != args.MapId)
+            Client.CaptureWarpSource(previousMap.Id, Client.ServerPoint, args.MapId);
+
         //if we are already on the map, dont do anything
         if(Client.Aisling?.Map is not null && (Client.Aisling.MapId == args.MapId))
             return HandlerResult.Default;
@@ -484,6 +518,8 @@ public sealed class ServerHandlers
         var args = PacketSerializer.Deserialize<CreatureTurnArgs>(packet);
         serialized = args;
 
+        Client.EntityManager.TurnEntity(args.SourceId, args.Direction);
+
         return HandlerResult.Default;
     }
 
@@ -491,6 +527,8 @@ public sealed class ServerHandlers
     {
         var args = PacketSerializer.Deserialize<RemoveItemFromPaneArgs>(packet);
         serialized = args;
+
+        Client.Inventory.Remove(args.Slot);
 
         return HandlerResult.Default;
     }
@@ -500,6 +538,8 @@ public sealed class ServerHandlers
         var args = PacketSerializer.Deserialize<AddItemToPaneArgs>(packet);
         serialized = args;
 
+        Client.Inventory.AddOrUpdate(args.Item);
+
         return HandlerResult.Default;
     }
 
@@ -507,6 +547,8 @@ public sealed class ServerHandlers
     {
         var args = PacketSerializer.Deserialize<RemoveEntityArgs>(packet);
         serialized = args;
+
+        Client.EntityManager.Remove(args.SourceId);
 
         return HandlerResult.Default;
     }
@@ -524,6 +566,9 @@ public sealed class ServerHandlers
         var args = PacketSerializer.Deserialize<CreatureWalkArgs>(packet);
         serialized = args;
 
+        //move the creature one tile from where it was, in the direction it walked
+        Client.EntityManager.MoveEntity(args.SourceId, Step(args.OldPoint, args.Direction), args.Direction);
+
         return HandlerResult.Default;
     }
 
@@ -532,8 +577,23 @@ public sealed class ServerHandlers
         var args = PacketSerializer.Deserialize<ClientWalkResponseArgs>(packet);
         serialized = args;
 
+        //the server confirmed our own walk: we stepped from OldPoint in Direction
+        Client.ServerPoint = Step(args.OldPoint, args.Direction);
+        Client.ServerDirection = args.Direction;
+        Client.MarkWalked();
+
         return HandlerResult.Default;
     }
+
+    //steps a point one tile in a cardinal direction (Up=north/y-1, Right=east/x+1, Down=south/y+1, Left=west/x-1)
+    private static Point Step(IPoint point, Direction direction) => direction switch
+    {
+        Direction.Up    => new Point(point.X, point.Y - 1),
+        Direction.Down  => new Point(point.X, point.Y + 1),
+        Direction.Left  => new Point(point.X - 1, point.Y),
+        Direction.Right => new Point(point.X + 1, point.Y),
+        _               => new Point(point.X, point.Y)
+    };
 
     private HandlerResult OnServerMessage(in Packet packet, out IPacketSerializable serialized)
     {
@@ -548,6 +608,8 @@ public sealed class ServerHandlers
         var args = PacketSerializer.Deserialize<AttributesArgs>(packet);
         serialized = args;
 
+        Client.Vitals.Update(args);
+
         return HandlerResult.Default;
     }
 
@@ -555,6 +617,33 @@ public sealed class ServerHandlers
     {
         var args = PacketSerializer.Deserialize<DisplayVisibleEntitiesArgs>(packet);
         serialized = args;
+
+        var map = Client.Aisling?.Map
+                  ?? (Client.Temp.TryGetValue("InitialMap", out var initial) ? initial as Map : null);
+
+        if (map is null)
+            return HandlerResult.Default;
+
+        foreach (var visible in args.VisibleObjects)
+            switch (visible)
+            {
+                case CreatureInfo creature:
+                    Client.EntityManager.Add(creature.CreatureType switch
+                    {
+                        CreatureType.Merchant => new Merchant(
+                            creature.Id, map, creature.Sprite, creature.X, creature.Y, creature.Direction, creature.Name),
+                        CreatureType.Aisling => new Aisling(
+                            creature.Id, map, creature.Sprite, creature.X, creature.Y, CreatureType.Aisling, creature.Direction, creature.Name),
+                        _ => new Monster(
+                            creature.Id, map, creature.Sprite, creature.X, creature.Y, creature.CreatureType, creature.Direction, creature.Name)
+                    });
+
+                    break;
+                case GroundItemInfo item:
+                    Client.EntityManager.Add(new GroundItem(item.Id, map, item.Sprite, item.X, item.Y));
+
+                    break;
+            }
 
         return HandlerResult.Default;
     }
@@ -564,6 +653,10 @@ public sealed class ServerHandlers
         var args = PacketSerializer.Deserialize<UserIdArgs>(packet);
         serialized = args;
 
+        //the server is telling us our own serial and facing
+        Client.Id = args.Id;
+        Client.ServerDirection = args.Direction;
+
         return HandlerResult.Default;
     }
 
@@ -571,6 +664,10 @@ public sealed class ServerHandlers
     {
         var args = PacketSerializer.Deserialize<LocationArgs>(packet);
         serialized = args;
+
+        //the server is telling us our own position
+        Client.ServerPoint = new Point(args.X, args.Y);
+        Client.CompleteWarp(args.X, args.Y);
 
         return HandlerResult.Default;
     }

@@ -1,4 +1,5 @@
-﻿using Chaos.Common.Definitions;
+﻿using System.Diagnostics.CodeAnalysis;
+using Chaos.Common.Definitions;
 using Chaos.Geometry.Abstractions.Definitions;
 
 namespace Ouroboros.Model;
@@ -7,6 +8,7 @@ public class Merchant : Creature
 {
     public string Name { get; }
 
+    [SetsRequiredMembers]
     public Merchant(
         uint id,
         Map map,

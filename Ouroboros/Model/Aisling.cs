@@ -1,4 +1,5 @@
-﻿using Chaos.Common.Definitions;
+﻿using System.Diagnostics.CodeAnalysis;
+using Chaos.Common.Definitions;
 using Chaos.Geometry.Abstractions.Definitions;
 using Ouroboros.Data;
 
@@ -12,6 +13,7 @@ public class Aisling : Creature
     public override AislingTrackers Trackers { get; }
 
     /// <inheritdoc />
+    [SetsRequiredMembers]
     public Aisling(
         uint id,
         Map map,

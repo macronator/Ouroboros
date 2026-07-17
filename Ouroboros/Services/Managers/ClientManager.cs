@@ -35,6 +35,9 @@ public sealed class ClientManager : BackgroundService
     
     public void RemoveClient(Client.DarkAgesClient client) => Clients.TryRemove(client.Guid, out _);
 
+    /// <summary>A snapshot of the currently connected clients.</summary>
+    public IReadOnlyList<Client.DarkAgesClient> ActiveClients => Clients.Values.ToArray();
+
     public void AddWindow(DaWindow daWindow)
     {
         Windows.TryAdd(daWindow.Process.Id, daWindow);
@@ -79,6 +82,7 @@ public sealed class ClientManager : BackgroundService
             clientSocket.NoDelay = true;
             
             var client = ClientFactory.Create(clientSocket);
+            AddClient(client);
             client.Connect();
         } catch
         {

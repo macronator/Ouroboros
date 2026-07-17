@@ -131,7 +131,7 @@ public static class CONSTANTS
     #endregion
 
     #region Paths
-    public const string DEFAULT_DARKAGES_DIRECTORY = "C:/Program Files (x86)/KRU/Darkages";
+    public const string DEFAULT_DARKAGES_DIRECTORY = "C:/KRU/Dark Ages";
     public const string DATA_DIRECTORY = "data";
     #endregion
 

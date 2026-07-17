@@ -39,7 +39,7 @@ public static partial class UnsafeNativeMethods
     [LibraryImport("kernel32.dll")]
     public static partial nuint GetProcAddress(nint hModule, [MarshalAs(UnmanagedType.LPStr)] string procName);
 
-    [LibraryImport("kernel32.dll", EntryPoint = "CreateProcessW", StringMarshalling = StringMarshalling.Utf16)]
+    [LibraryImport("kernel32.dll", EntryPoint = "CreateProcessW", StringMarshalling = StringMarshalling.Utf16, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static partial bool CreateProcess(
         string applicationName, string? commandLine, nint processAttributes, nint threadAttributes, [MarshalAs(UnmanagedType.Bool)] bool inheritHandles,

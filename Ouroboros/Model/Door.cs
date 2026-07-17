@@ -1,4 +1,5 @@
-﻿using Chaos.Geometry.EqualityComparers;
+﻿using System.Diagnostics.CodeAnalysis;
+using Chaos.Geometry.EqualityComparers;
 using Ouroboros.Data;
 
 namespace Ouroboros.Model;
@@ -8,6 +9,7 @@ public class Door : MapEntity, IEquatable<Door>
     public bool Closed { get; set; }
 
     /// <inheritdoc />
+    [SetsRequiredMembers]
     public Door(
         Map map,
         int x,

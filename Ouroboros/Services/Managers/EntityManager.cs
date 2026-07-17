@@ -1,6 +1,8 @@
 ﻿using Chaos.Common.Definitions;
 using Chaos.Common.Synchronization;
 using Chaos.Extensions.Geometry;
+using Chaos.Geometry.Abstractions;
+using Chaos.Geometry.Abstractions.Definitions;
 using Chaos.Networking.Entities.Server;
 using Ouroboros.Model;
 using Ouroboros.Networking;
@@ -173,8 +175,9 @@ public class EntityManager
 
                 break;
         }
-        
-        Entities.Add(entity.Id, entity);
+
+        //upsert so re-displaying an entity refreshes it instead of throwing on a duplicate id
+        Entities[entity.Id] = entity;
     }
 
     public void Add(Door door)
@@ -184,6 +187,30 @@ public class EntityManager
         Doors.Add(door);
     }
     
+    /// <summary>Updates a tracked entity's position (and facing, if it's a creature).</summary>
+    public void MoveEntity(uint id, IPoint point, Direction? direction = null)
+    {
+        using var @lock = Sync.Enter();
+
+        if (!Entities.TryGetValue(id, out var entity))
+            return;
+
+        entity.X = point.X;
+        entity.Y = point.Y;
+
+        if (direction is { } facing && entity is Creature creature)
+            creature.Direction = facing;
+    }
+
+    /// <summary>Updates a tracked creature's facing.</summary>
+    public void TurnEntity(uint id, Direction direction)
+    {
+        using var @lock = Sync.Enter();
+
+        if (Entities.TryGetValue(id, out var entity) && entity is Creature creature)
+            creature.Direction = direction;
+    }
+
     public void Remove(uint id)
     {
         using var @lock = Sync.Enter();

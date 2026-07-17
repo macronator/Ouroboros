@@ -25,13 +25,18 @@ public class DaWindow : IDisposable
 
     public static unsafe DaWindow Create(string path)
     {
+        if (!File.Exists(path))
+            throw new FileNotFoundException(
+                $"Dark Ages client not found at '{path}'. Set the correct Dark Ages folder in Options.",
+                path);
+
         var startupInfo = new StartupInformation
         {
             Size = sizeof(StartupInformation)
         };
         var dir = Path.GetDirectoryName(path);
 
-        UnsafeNativeMethods.CreateProcess(
+        var created = UnsafeNativeMethods.CreateProcess(
             path,
             null,
             nint.Zero,
@@ -42,6 +47,10 @@ public class DaWindow : IDisposable
             dir,
             ref startupInfo,
             out var processInfo);
+
+        if (!created || processInfo.ProcessHandle == nint.Zero)
+            throw new InvalidOperationException(
+                $"Failed to launch the Dark Ages client at '{path}' (Win32 error {Marshal.GetLastWin32Error()}).");
 
         return new DaWindow(processInfo);
     }
