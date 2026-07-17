@@ -32,6 +32,12 @@ public sealed class AutomationViewModel : NotifyPropertyChangedBase
         set => Toggle(client => client.Bot.Consumables.Enabled = value, value);
     }
 
+    public bool Loot
+    {
+        get => _client?.Bot.Loot.Enabled ?? false;
+        set => Toggle(client => client.Bot.Loot.Enabled = value, value);
+    }
+
     /// <summary>Re-points the toggles at <paramref name="client" /> (or nothing) and refreshes their state.</summary>
     public void Bind(DarkAgesClient? client)
     {
@@ -40,6 +46,7 @@ public sealed class AutomationViewModel : NotifyPropertyChangedBase
         OnPropertyChanged(nameof(Combat));
         OnPropertyChanged(nameof(Support));
         OnPropertyChanged(nameof(Consumables));
+        OnPropertyChanged(nameof(Loot));
     }
 
     private void Toggle(Action<DarkAgesClient> apply, bool enabling)
@@ -56,5 +63,6 @@ public sealed class AutomationViewModel : NotifyPropertyChangedBase
         OnPropertyChanged(nameof(Combat));
         OnPropertyChanged(nameof(Support));
         OnPropertyChanged(nameof(Consumables));
+        OnPropertyChanged(nameof(Loot));
     }
 }

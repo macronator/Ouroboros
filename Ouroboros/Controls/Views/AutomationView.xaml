@@ -47,5 +47,14 @@
                        VerticalAlignment="Center"
                        Margin="12,0,0,0" />
         </StackPanel>
+
+        <StackPanel Orientation="Horizontal"
+                    Margin="0,6">
+            <CheckBox Style="{StaticResource MaterialDesignSwitchAccentToggleButton}"
+                      IsChecked="{Binding Loot}" />
+            <TextBlock Text="Auto-loot ground drops"
+                       VerticalAlignment="Center"
+                       Margin="12,0,0,0" />
+        </StackPanel>
     </StackPanel>
 </UserControl>

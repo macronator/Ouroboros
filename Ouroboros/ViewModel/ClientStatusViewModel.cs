@@ -20,6 +20,7 @@ public sealed class ClientStatusViewModel : NotifyPropertyChangedBase
     private bool _combat;
     private bool _support;
     private bool _consumables;
+    private bool _loot;
 
     public ClientStatusViewModel(DarkAgesClient client) => Client = client;
 
@@ -40,6 +41,7 @@ public sealed class ClientStatusViewModel : NotifyPropertyChangedBase
     public bool Combat { get => _combat; private set => SetField(ref _combat, value); }
     public bool Support { get => _support; private set => SetField(ref _support, value); }
     public bool Consumables { get => _consumables; private set => SetField(ref _consumables, value); }
+    public bool Loot { get => _loot; private set => SetField(ref _loot, value); }
 
     /// <summary>Pulls the latest values off the client. Call on the UI thread.</summary>
     public void Update()
@@ -63,6 +65,7 @@ public sealed class ClientStatusViewModel : NotifyPropertyChangedBase
         Combat = Client.Bot.Combat.Enabled;
         Support = Client.Bot.Support.Enabled;
         Consumables = Client.Bot.Consumables.Enabled;
+        Loot = Client.Bot.Loot.Enabled;
     }
 
     /// <summary>A populated instance for the XAML designer (no live client).</summary>
@@ -79,6 +82,7 @@ public sealed class ClientStatusViewModel : NotifyPropertyChangedBase
             Walking = true,
             Combat = false,
             Support = true,
-            Consumables = false
+            Consumables = false,
+            Loot = true
         };
 }

@@ -67,6 +67,11 @@
                                     <CheckBox Content="Consumables"
                                               IsChecked="{Binding Consumables, Mode=OneWay}"
                                               IsHitTestVisible="False"
+                                              Focusable="False"
+                                              Margin="0,0,12,0" />
+                                    <CheckBox Content="Loot"
+                                              IsChecked="{Binding Loot, Mode=OneWay}"
+                                              IsHitTestVisible="False"
                                               Focusable="False" />
                                 </WrapPanel>
                             </StackPanel>

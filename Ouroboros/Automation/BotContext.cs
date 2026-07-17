@@ -3,6 +3,7 @@ using Chaos.Geometry;
 using Chaos.Networking.Entities.Server;
 using Ouroboros.Automation.Combat;
 using Ouroboros.Automation.Commands;
+using Ouroboros.Automation.Looting;
 using Ouroboros.Automation.Support;
 using Ouroboros.Automation.Walking;
 using Ouroboros.Client;
@@ -34,6 +35,8 @@ public sealed class BotContext
         Engine.Register(Support);
         Consumables = new ItemRoutine();
         Engine.Register(Consumables);
+        Loot = new LootRoutine();
+        Engine.Register(Loot);
         Commands = new SlashCommandInterpreter();
         DefaultCommands.Register(Commands);
     }
@@ -52,6 +55,9 @@ public sealed class BotContext
 
     /// <summary>The consumable auto-use routine — potions/mana items at thresholds (off until enabled).</summary>
     public ItemRoutine Consumables { get; }
+
+    /// <summary>The auto-loot routine — walks to and picks up nearby ground drops (off until enabled).</summary>
+    public LootRoutine Loot { get; }
 
     /// <summary>The chat slash-command interpreter for this client.</summary>
     public SlashCommandInterpreter Commands { get; }

@@ -120,6 +120,10 @@ The one missing piece everything else stands on.
     old code-behind string dump; timer refreshes the view-model, XAML binds).
   - **Automation** — two-way toggles for combat/support/consumables on the selected client.
   - **Packet Console** / **Waypoints** — scaffolded UserControls + view-models, ready to fill in.
+- [x] Auto-loot (`Automation/Looting/LootRoutine.cs`): walks to the nearest wanted ground drop and
+  picks it into the first free inventory slot — one pickup grabs gold or item alike. Ground drops carry
+  no name (only a sprite), so filtering is by sprite whitelist/blacklist; yields movement to the walker.
+  Off by default; `/loot` toggles, and it appears on the Automation tab and Dashboard.
 - [ ] Phase 6 — dual-use game-process layer
 
 ## Live-test findings (in-game on 7.41)

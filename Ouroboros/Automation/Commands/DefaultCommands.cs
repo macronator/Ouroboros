@@ -229,6 +229,16 @@ public static class DefaultCommands
             context.Reply(context.Consumables.Enabled ? "consumables on" : "consumables off");
         });
 
+        interpreter.Register("loot", "toggle auto-pickup of nearby ground drops", (context, _) =>
+        {
+            context.Loot.Enabled = !context.Loot.Enabled;
+
+            if (context.Loot.Enabled)
+                context.Engine.Start();
+
+            context.Reply(context.Loot.Enabled ? "loot on" : "loot off");
+        });
+
         interpreter.Register("healitem", "register an HP consumable, or list them: /healitem [name]", (context, args) =>
             RegisterConsumable(context, context.Consumables.HealItems, args.Raw, "heal"));
 
