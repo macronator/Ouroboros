@@ -28,8 +28,11 @@ public sealed class MainWindowViewModel : NotifyPropertyChangedBase
         get => _selectedClient;
         set
         {
-            if (SetField(ref _selectedClient, value))
-                Automation.Bind(value?.Client);
+            if (!SetField(ref _selectedClient, value))
+                return;
+
+            Automation.Bind(value?.Client);
+            PacketConsole.Bind(value?.Client);
         }
     }
 
@@ -70,6 +73,8 @@ public sealed class MainWindowViewModel : NotifyPropertyChangedBase
 
         SelectedClient ??= Clients.FirstOrDefault();
         Automation.Bind(SelectedClient?.Client);
+        PacketConsole.Bind(SelectedClient?.Client);
+        PacketConsole.Refresh();
 
         OnPropertyChanged(nameof(HasClients));
         OnPropertyChanged(nameof(StatusSummary));

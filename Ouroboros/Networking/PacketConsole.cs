@@ -14,6 +14,7 @@ public sealed class PacketConsole
     private readonly DarkAgesClient Client;
     private readonly Queue<PacketLogEntry> Entries = new();
     private readonly object Gate = new();
+    private long Sequence;
 
     public PacketConsole(DarkAgesClient client) => Client = client;
 
@@ -42,10 +43,11 @@ public sealed class PacketConsole
         if (!IsCapturing || frame.Length <= 3)
             return;
 
-        var entry = new PacketLogEntry(DateTime.Now, direction, frame.ToArray());
+        PacketLogEntry entry;
 
         lock (Gate)
         {
+            entry = new PacketLogEntry(DateTime.Now, direction, frame.ToArray(), ++Sequence);
             Entries.Enqueue(entry);
 
             while (Entries.Count > MaxEntries)

@@ -5,15 +5,22 @@ namespace Ouroboros.Networking;
 /// <summary>One observed or injected packet, captured for the packet console.</summary>
 public sealed class PacketLogEntry
 {
-    public PacketLogEntry(DateTime timestamp, PacketDirection direction, byte[] data)
+    public PacketLogEntry(DateTime timestamp, PacketDirection direction, byte[] data, long sequence)
     {
         Timestamp = timestamp;
         Direction = direction;
         Data = data;
+        Sequence = sequence;
     }
+
+    /// <summary>Monotonically increasing capture id, so a poller can append only entries it hasn't seen.</summary>
+    public long Sequence { get; }
 
     public DateTime Timestamp { get; }
     public PacketDirection Direction { get; }
+
+    /// <summary>Short direction arrow for compact display (C→S / S→C).</summary>
+    public string Arrow => Direction == PacketDirection.ClientToServer ? "C→S" : "S→C";
 
     /// <summary>The full cleartext wire frame: <c>[0xAA][len][len][opcode][seq?][body]</c>.</summary>
     public byte[] Data { get; }

@@ -91,8 +91,9 @@ The one missing piece everything else stands on.
 ## Status
 - [x] Heartbeat/tick priority queues (done)
 - [x] Phase 0 — automation engine foundation (done)
-- [~] Phase 1 — packet console + craft DSL (core done: DSL parser, log model,
-  raw injection, receive taps; WPF console tab still pending)
+- [x] Phase 1 — packet console + craft DSL (done: DSL parser, log model, raw
+  injection, receive taps, and the WPF console tab — live log (time/direction/opcode/
+  hex), capture toggle, clear, and a craft box that injects toward client/server)
 - [x] Phase 2 — skills/spells + cooldowns (done: SkillBook/SpellBook populated
   from pane + cooldown packets; ready-state + buff-active tracking)
 - [~] Phase 3 — waypoint + walking bot (done: Waypoint/route model, persistence,
@@ -119,7 +120,9 @@ The one missing piece everything else stands on.
   - **Dashboard** — live per-client status cards bound to `ClientStatusViewModel` (replaces the
     old code-behind string dump; timer refreshes the view-model, XAML binds).
   - **Automation** — two-way toggles for combat/support/consumables on the selected client.
-  - **Packet Console** / **Waypoints** — scaffolded UserControls + view-models, ready to fill in.
+  - **Packet Console** — live packet log (time, direction, opcode name, hex) polled from the
+    per-client `PacketConsole`, with a capture toggle, clear, and a craft box that injects.
+  - **Waypoints** — scaffolded UserControl + view-model, ready to fill in.
 - [x] Auto-loot (`Automation/Looting/LootRoutine.cs`): walks to the nearest wanted ground drop and
   picks it into the first free inventory slot — one pickup grabs gold or item alike. Ground drops carry
   no name (only a sprite), so filtering is by sprite whitelist/blacklist; yields movement to the walker.
