@@ -258,6 +258,68 @@ public static class DefaultCommands
         interpreter.Register("manaitem", "register an MP consumable, or list them: /manaitem [name]", (context, args) =>
             RegisterConsumable(context, context.Consumables.ManaItems, args.Raw, "mana"));
 
+        interpreter.Register("dialog", "show the open NPC dialog or menu", (context, _) =>
+        {
+            if (context.Npc.Dialog is { } dialog)
+            {
+                var options = dialog.Options.Count == 0
+                    ? ""
+                    : "\n" + string.Join('\n', dialog.Options.Select((text, index) => $"  {index + 1}. {text}"));
+                var buttons = (dialog.HasPrevious ? " [prev]" : "") + (dialog.HasNext ? " [next]" : "");
+
+                context.ReplyWindow($"{dialog.Name}: {dialog.Text}{options}{buttons}");
+            } else if (context.Npc.Menu is { } menu)
+            {
+                var options = menu.Options.Count == 0
+                    ? ""
+                    : "\n" + string.Join('\n', menu.Options.Select(option => $"  [{option.PursuitId}] {option.Text}"));
+
+                context.ReplyWindow($"{menu.Name}: {menu.Text}{options}");
+            } else
+                context.Reply("no dialog open");
+        });
+
+        interpreter.Register("next", "advance the NPC dialog", (context, _) =>
+            context.Reply(context.Npc.Next() ? "next" : "no dialog open"));
+
+        interpreter.Register("prev", "go back in the NPC dialog", (context, _) =>
+            context.Reply(context.Npc.Previous() ? "prev" : "no dialog to go back in"));
+
+        interpreter.Register("close", "close the NPC dialog", (context, _) =>
+            context.Reply(context.Npc.Close() ? "closed" : "no dialog open"));
+
+        interpreter.Register("pick", "choose a dialog option: /pick <number|text>", (context, args) =>
+        {
+            if (args.Raw.Length == 0)
+            {
+                context.Reply("usage: /pick <number|text>");
+
+                return;
+            }
+
+            var chosen = byte.TryParse(args.Raw, out var option)
+                ? context.Npc.SelectOption(option)
+                : context.Npc.SelectOption(args.Raw);
+
+            context.Reply(chosen ? $"picked {args.Raw}" : "no matching option");
+        });
+
+        interpreter.Register("pursue", "choose a menu pursuit: /pursue <id|text>", (context, args) =>
+        {
+            if (args.Raw.Length == 0)
+            {
+                context.Reply("usage: /pursue <id|text>");
+
+                return;
+            }
+
+            var chosen = ushort.TryParse(args.Raw, out var pursuitId)
+                ? context.Npc.SelectPursuit(pursuitId)
+                : context.Npc.SelectPursuit(args.Raw);
+
+            context.Reply(chosen ? $"pursuing {args.Raw}" : "no matching pursuit / no menu open");
+        });
+
         interpreter.Register("hp", "show current vitals", (context, _) =>
         {
             var vitals = context.Vitals;

@@ -66,6 +66,12 @@ public sealed class DarkAgesClient : IEquatable<DarkAgesClient>
     public SpellBook SpellBook { get; }
     public SelfState Vitals { get; }
     public Inventory Inventory { get; }
+
+    /// <summary>The NPC dialog currently open on the client, or null. Updated from the DisplayDialog packet.</summary>
+    public NpcDialog? Dialog { get; set; }
+
+    /// <summary>The NPC menu (pursuit list) currently open, or null. Updated from the DisplayMenu packet.</summary>
+    public NpcMenu? Menu { get; set; }
     public IStorage<WorldMeta> WorldStorage { get; }
     public Dictionary<string, object> Temp { get; set; }
 

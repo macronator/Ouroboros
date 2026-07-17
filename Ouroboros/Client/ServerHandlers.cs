@@ -353,6 +353,21 @@ public sealed class ServerHandlers
         var args = PacketSerializer.Deserialize<DisplayDialogArgs>(packet);
         serialized = args;
 
+        Client.Dialog = new NpcDialog
+        {
+            DialogId = args.DialogId,
+            SourceId = args.SourceId ?? 0,
+            EntityType = args.EntityType,
+            PursuitId = args.PursuitId ?? 0,
+            DialogType = args.DialogType,
+            Name = args.Name,
+            Text = args.Text,
+            Options = args.Options?.ToArray() ?? [],
+            HasNext = args.HasNextButton,
+            HasPrevious = args.HasPreviousButton
+        };
+        Client.Menu = null;
+
         return HandlerResult.Default;
     }
 
@@ -360,6 +375,18 @@ public sealed class ServerHandlers
     {
         var args = PacketSerializer.Deserialize<DisplayMenuArgs>(packet);
         serialized = args;
+
+        Client.Menu = new NpcMenu
+        {
+            SourceId = args.SourceId ?? 0,
+            EntityType = args.EntityType,
+            MenuType = args.MenuType,
+            PursuitId = args.PursuitId,
+            Name = args.Name,
+            Text = args.Text,
+            Options = args.Options?.Select(option => new NpcMenuOption(option.Text, option.Pursuit)).ToArray() ?? []
+        };
+        Client.Dialog = null;
 
         return HandlerResult.Default;
     }

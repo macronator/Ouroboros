@@ -41,7 +41,11 @@ public sealed class BotContext
         Engine.Register(Trash);
         Commands = new SlashCommandInterpreter();
         DefaultCommands.Register(Commands);
+        Npc = new NpcSession(client);
     }
+
+    /// <summary>Drives the NPC dialog/menu the client currently has open.</summary>
+    public NpcSession Npc { get; }
 
     /// <summary>The automation loop manager for this client.</summary>
     public AutomationEngine Engine { get; }

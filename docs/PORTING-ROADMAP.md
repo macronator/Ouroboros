@@ -128,6 +128,12 @@ The one missing piece everything else stands on.
   trash list at the character's feet (inventory items carry names, so filtering is by name — the
   complement of sprite-based loot). Off by default, empty list, paced. `/trash` toggles,
   `/trashitem [name]` curates the list, and it's on the Automation tab.
+- [x] NPC dialog/menu session helper (`Automation/NpcSession.cs` + `Model/NpcDialog.cs`,
+  `Model/NpcMenu.cs`). The DisplayDialog/DisplayMenu handlers (were stubbed) now track the open
+  dialog/menu on the client; `NpcSession` drives it — Next/Previous/SelectOption/Close for dialogs
+  (applying the ±1 DialogId action offset the protocol needs) and SelectPursuit for menus, by id or
+  matching text. Commands: `/dialog` (show), `/next` `/prev` `/close`, `/pick <n|text>`,
+  `/pursue <id|text>`. Foundation for scripted banking/vendoring. (Text-entry dialogs: later.)
 - [ ] Phase 6 — dual-use game-process layer
 
 ## Live-test findings (in-game on 7.41)
