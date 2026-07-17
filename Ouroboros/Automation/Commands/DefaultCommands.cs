@@ -219,6 +219,22 @@ public static class DefaultCommands
             context.Reply(context.Support.Enabled ? "support on" : "support off");
         });
 
+        interpreter.Register("pots", "toggle consumable auto-use (potions/mana items)", (context, _) =>
+        {
+            context.Consumables.Enabled = !context.Consumables.Enabled;
+
+            if (context.Consumables.Enabled)
+                context.Engine.Start();
+
+            context.Reply(context.Consumables.Enabled ? "consumables on" : "consumables off");
+        });
+
+        interpreter.Register("healitem", "register an HP consumable, or list them: /healitem [name]", (context, args) =>
+            RegisterConsumable(context, context.Consumables.HealItems, args.Raw, "heal"));
+
+        interpreter.Register("manaitem", "register an MP consumable, or list them: /manaitem [name]", (context, args) =>
+            RegisterConsumable(context, context.Consumables.ManaItems, args.Raw, "mana"));
+
         interpreter.Register("hp", "show current vitals", (context, _) =>
         {
             var vitals = context.Vitals;
@@ -226,5 +242,24 @@ public static class DefaultCommands
             context.Reply($"HP {vitals.CurrentHp}/{vitals.MaximumHp} ({vitals.HealthPercent}%)  "
                           + $"MP {vitals.CurrentMp}/{vitals.MaximumMp} ({vitals.ManaPercent}%)");
         });
+    }
+
+    //shared body for /healitem and /manaitem: no arg lists the set, otherwise adds a name (deduped)
+    private static void RegisterConsumable(BotContext context, List<string> items, string name, string kind)
+    {
+        if (name.Length == 0)
+        {
+            context.Reply(items.Count == 0 ? $"no {kind} items set" : $"{kind} items: {string.Join(", ", items)}");
+
+            return;
+        }
+
+        if (items.Contains(name, StringComparer.OrdinalIgnoreCase))
+            context.Reply($"already set: {name}");
+        else
+        {
+            items.Add(name);
+            context.Reply($"{kind} item added: {name}");
+        }
     }
 }

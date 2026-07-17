@@ -109,6 +109,10 @@ The one missing piece everything else stands on.
 - [x] Inventory tracking (`Inventory`/`Item` models populated from Add/RemoveItemToPane;
   by-slot and by-name lookups, stack totals, free-slot/full checks; `/inv` and `/count`
   commands). Feeds item-use automation (potions/reagents) and bank/drop logic later.
+- [x] Consumable auto-use (`Automation/Support/ItemRoutine.cs`): uses a healing/mana item
+  from inventory when HP/MP drop to a threshold, HP first, one use per tick, re-use paced
+  by `MinInterval` so a single low reading doesn't drain the stack. Off by default with empty
+  item lists (nothing consumed unasked); `/pots` toggles, `/healitem`/`/manaitem` register names.
 - [ ] Phase 6 — dual-use game-process layer
 
 ## Live-test findings (in-game on 7.41)

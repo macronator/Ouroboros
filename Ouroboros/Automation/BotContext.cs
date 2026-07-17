@@ -32,6 +32,8 @@ public sealed class BotContext
         Engine.Register(Combat);
         Support = new SupportRoutine();
         Engine.Register(Support);
+        Consumables = new ItemRoutine();
+        Engine.Register(Consumables);
         Commands = new SlashCommandInterpreter();
         DefaultCommands.Register(Commands);
     }
@@ -47,6 +49,9 @@ public sealed class BotContext
 
     /// <summary>The heal/buff support routine (registered on the engine; off until enabled).</summary>
     public SupportRoutine Support { get; }
+
+    /// <summary>The consumable auto-use routine — potions/mana items at thresholds (off until enabled).</summary>
+    public ItemRoutine Consumables { get; }
 
     /// <summary>The chat slash-command interpreter for this client.</summary>
     public SlashCommandInterpreter Commands { get; }
