@@ -239,6 +239,19 @@ public static class DefaultCommands
             context.Reply(context.Loot.Enabled ? "loot on" : "loot off");
         });
 
+        interpreter.Register("trash", "toggle auto-drop of items on the trash list", (context, _) =>
+        {
+            context.Trash.Enabled = !context.Trash.Enabled;
+
+            if (context.Trash.Enabled)
+                context.Engine.Start();
+
+            context.Reply(context.Trash.Enabled ? "drop-trash on" : "drop-trash off");
+        });
+
+        interpreter.Register("trashitem", "register a trash item to drop, or list them: /trashitem [name]", (context, args) =>
+            RegisterConsumable(context, context.Trash.TrashItems, args.Raw, "trash"));
+
         interpreter.Register("healitem", "register an HP consumable, or list them: /healitem [name]", (context, args) =>
             RegisterConsumable(context, context.Consumables.HealItems, args.Raw, "heal"));
 

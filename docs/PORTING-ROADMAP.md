@@ -124,6 +124,10 @@ The one missing piece everything else stands on.
   picks it into the first free inventory slot — one pickup grabs gold or item alike. Ground drops carry
   no name (only a sprite), so filtering is by sprite whitelist/blacklist; yields movement to the walker.
   Off by default; `/loot` toggles, and it appears on the Automation tab and Dashboard.
+- [x] Drop-trash (`Automation/Looting/TrashRoutine.cs`): drops inventory items whose name is on a
+  trash list at the character's feet (inventory items carry names, so filtering is by name — the
+  complement of sprite-based loot). Off by default, empty list, paced. `/trash` toggles,
+  `/trashitem [name]` curates the list, and it's on the Automation tab.
 - [ ] Phase 6 — dual-use game-process layer
 
 ## Live-test findings (in-game on 7.41)

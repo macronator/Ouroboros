@@ -56,5 +56,14 @@
                        VerticalAlignment="Center"
                        Margin="12,0,0,0" />
         </StackPanel>
+
+        <StackPanel Orientation="Horizontal"
+                    Margin="0,6">
+            <CheckBox Style="{StaticResource MaterialDesignSwitchAccentToggleButton}"
+                      IsChecked="{Binding Trash}" />
+            <TextBlock Text="Drop trash items"
+                       VerticalAlignment="Center"
+                       Margin="12,0,0,0" />
+        </StackPanel>
     </StackPanel>
 </UserControl>

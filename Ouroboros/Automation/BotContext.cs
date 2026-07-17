@@ -37,6 +37,8 @@ public sealed class BotContext
         Engine.Register(Consumables);
         Loot = new LootRoutine();
         Engine.Register(Loot);
+        Trash = new TrashRoutine();
+        Engine.Register(Trash);
         Commands = new SlashCommandInterpreter();
         DefaultCommands.Register(Commands);
     }
@@ -58,6 +60,9 @@ public sealed class BotContext
 
     /// <summary>The auto-loot routine — walks to and picks up nearby ground drops (off until enabled).</summary>
     public LootRoutine Loot { get; }
+
+    /// <summary>The drop-trash routine — drops inventory items on the trash list (off until enabled).</summary>
+    public TrashRoutine Trash { get; }
 
     /// <summary>The chat slash-command interpreter for this client.</summary>
     public SlashCommandInterpreter Commands { get; }
