@@ -30,6 +30,11 @@
                     Click="ClearButton_Click"
                     Style="{StaticResource MaterialDesignPaperButton}"
                     Margin="0,0,16,0" />
+            <TextBox Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}"
+                     materialDesign:HintAssist.Hint="filter opcode / hex"
+                     Width="170"
+                     VerticalAlignment="Center"
+                     Margin="0,0,16,0" />
             <TextBlock Text="{Binding Status}"
                        VerticalAlignment="Center"
                        Opacity="0.7" />

@@ -16,6 +16,7 @@ public sealed class PacketConsoleViewModel : NotifyPropertyChangedBase
     private PacketConsole? Console;
     private long LastSequence;
     private string _craftText = string.Empty;
+    private string _filter = string.Empty;
     private string _status = "No client selected.";
 
     public ObservableCollection<PacketLogEntry> Entries { get; } = [];
@@ -37,6 +38,21 @@ public sealed class PacketConsoleViewModel : NotifyPropertyChangedBase
 
     public string CraftText { get => _craftText; set => SetField(ref _craftText, value); }
     public string Status { get => _status; private set => SetField(ref _status, value); }
+
+    /// <summary>Substring matched against opcode name or hex (case-insensitive). Empty shows everything.</summary>
+    public string Filter
+    {
+        get => _filter;
+        set
+        {
+            if (!SetField(ref _filter, value))
+                return;
+
+            //re-scan the log from the start so the filter applies to already-captured entries too
+            Entries.Clear();
+            LastSequence = 0;
+        }
+    }
 
     /// <summary>Re-points the tab at the selected client's console; resets the view when it changes.</summary>
     public void Bind(DarkAgesClient? client)
@@ -64,13 +80,20 @@ public sealed class PacketConsoleViewModel : NotifyPropertyChangedBase
         foreach (var entry in Console.Snapshot())
             if (entry.Sequence > LastSequence)
             {
-                Entries.Add(entry);
                 LastSequence = entry.Sequence;
+
+                if (Matches(entry))
+                    Entries.Add(entry);
             }
 
         while (Entries.Count > MaxDisplay)
             Entries.RemoveAt(0);
     }
+
+    private bool Matches(PacketLogEntry entry)
+        => (_filter.Length == 0)
+           || entry.OpCodeName.Contains(_filter, StringComparison.OrdinalIgnoreCase)
+           || entry.Hex.Contains(_filter, StringComparison.OrdinalIgnoreCase);
 
     public void SendToServer() => Send(toServer: true);
 
