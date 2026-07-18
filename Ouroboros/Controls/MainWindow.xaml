@@ -55,6 +55,16 @@
                             Margin="0,0,10,0">
                         <materialDesign:PackIcon Kind="Minimize" />
                     </Button>
+
+                    <!-- Which client the tabs act on -->
+                    <ComboBox DockPanel.Dock="Right"
+                              Width="150"
+                              VerticalAlignment="Center"
+                              Margin="0,0,16,0"
+                              ItemsSource="{Binding Clients}"
+                              SelectedItem="{Binding SelectedClient}"
+                              DisplayMemberPath="Name"
+                              Visibility="{Binding HasClients, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </DockPanel>
             </materialDesign:ColorZone>
             <TextBlock Text="Ouroboros"

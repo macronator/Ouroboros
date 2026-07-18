@@ -72,7 +72,10 @@ public sealed class MainWindowViewModel : NotifyPropertyChangedBase
             row.Update();
         }
 
-        SelectedClient ??= Clients.FirstOrDefault();
+        //keep a valid selection: default to the first, and recover if the selected client disconnected
+        if (SelectedClient is null || !Clients.Contains(SelectedClient))
+            SelectedClient = Clients.FirstOrDefault();
+
         Automation.Bind(SelectedClient?.Client);
         PacketConsole.Bind(SelectedClient?.Client);
         PacketConsole.Refresh();

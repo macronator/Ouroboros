@@ -12,6 +12,7 @@
                     Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:NullablePrimitiveToStringConverter x:Key="NullablePrimitiveToStringConverter" />
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
