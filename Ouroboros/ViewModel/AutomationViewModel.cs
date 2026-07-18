@@ -65,6 +65,9 @@ public sealed class AutomationViewModel : NotifyPropertyChangedBase
         set => SetThreshold(client => client.Bot.Consumables.RestoreManaThreshold = value);
     }
 
+    /// <summary>Persists the selected client's automation thresholds and item lists to disk.</summary>
+    public void Save() => _client?.Bot.SaveConfig();
+
     /// <summary>Re-points the toggles at <paramref name="client" /> (or nothing) and refreshes their state.</summary>
     public void Bind(DarkAgesClient? client)
     {

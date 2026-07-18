@@ -422,6 +422,12 @@ public static class DefaultCommands
             context.Reply(string.Join(' ', buffer.Select(value => value.ToString("X2"))));
         });
 
+        interpreter.Register("savecfg", "save automation thresholds and item lists to disk", (context, _) =>
+        {
+            context.SaveConfig();
+            context.Reply("automation config saved");
+        });
+
         interpreter.Register("hp", "show current vitals", (context, _) =>
         {
             var vitals = context.Vitals;

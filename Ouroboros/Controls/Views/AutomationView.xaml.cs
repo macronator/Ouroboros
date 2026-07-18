@@ -4,4 +4,7 @@ namespace Ouroboros.Controls.Views;
 public sealed partial class AutomationView
 {
     public AutomationView() => InitializeComponent();
+
+    private void SaveButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        => (DataContext as ViewModel.AutomationViewModel)?.Save();
 }

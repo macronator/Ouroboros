@@ -73,6 +73,7 @@ public sealed class DarkAgesClient : IEquatable<DarkAgesClient>
     /// <summary>The NPC menu (pursuit list) currently open, or null. Updated from the DisplayMenu packet.</summary>
     public NpcMenu? Menu { get; set; }
     public IStorage<WorldMeta> WorldStorage { get; }
+    private readonly IStorage<AutomationConfig> AutomationStorage;
     public Dictionary<string, object> Temp { get; set; }
 
     public delegate HandlerResult PacketHandler(in Packet packet, out IPacketSerializable serialized);
@@ -85,10 +86,12 @@ public sealed class DarkAgesClient : IEquatable<DarkAgesClient>
         ClientManager manager,
         Routefinder routefinder,
         IReadOnlyStorage<GeneralOptions> generalOptions,
-        IStorage<WorldMeta> worldStorage)
+        IStorage<WorldMeta> worldStorage,
+        IStorage<AutomationConfig> automationConfig)
     {
         GeneralOptions = generalOptions.Value;
         WorldStorage = worldStorage;
+        AutomationStorage = automationConfig;
         ProxyClient = proxyClient;
         ProxyServer = proxyServer;
         Routefinder = routefinder;
@@ -114,6 +117,7 @@ public sealed class DarkAgesClient : IEquatable<DarkAgesClient>
         Signal = new AsyncSignal();
         EntityManager = new EntityManager(this);
         Bot = new BotContext(this);
+        Bot.ApplyConfig(AutomationStorage.Value);
         Console = new PacketConsole(this);
         SkillBook = new SkillBook();
         SpellBook = new SpellBook();
@@ -268,6 +272,13 @@ public sealed class DarkAgesClient : IEquatable<DarkAgesClient>
         Routefinder.Rebuild();
 
         return true;
+    }
+
+    /// <summary>Captures the current automation settings and persists them to disk.</summary>
+    public void SaveAutomationConfig()
+    {
+        Bot.CaptureConfigInto(AutomationStorage.Value);
+        AutomationStorage.Save();
     }
 
     public void Connect(IPEndPoint? serverEndPoint = null)

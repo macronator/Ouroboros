@@ -88,6 +88,7 @@ public sealed partial class App
         {
             cfg.WithSingleton<GeneralOptions>();
             cfg.WithSingleton<WorldMeta>();
+            cfg.WithSingleton<Data.AutomationConfig>();
         });
         
         services.AddSingleton<RedirectManager>();

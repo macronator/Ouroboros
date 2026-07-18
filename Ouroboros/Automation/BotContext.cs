@@ -7,6 +7,7 @@ using Ouroboros.Automation.Looting;
 using Ouroboros.Automation.Support;
 using Ouroboros.Automation.Walking;
 using Ouroboros.Client;
+using Ouroboros.Data;
 using Ouroboros.Data.Meta;
 using Ouroboros.Memory;
 using Ouroboros.Model;
@@ -153,4 +154,37 @@ public sealed class BotContext
 
     /// <summary>Removes a warp by its source tile. Returns whether one was removed.</summary>
     public bool RemoveWarp(short mapId, int x, int y) => Client.RemoveWarp(mapId, x, y);
+
+    /// <summary>Applies persisted automation settings (thresholds + item lists) to this client's routines.</summary>
+    public void ApplyConfig(AutomationConfig config)
+    {
+        Support.HealHealthThreshold = config.HealThreshold;
+        Support.Buffs.Clear();
+        Support.Buffs.AddRange(config.Buffs);
+
+        Consumables.HealHealthThreshold = config.PotionHpThreshold;
+        Consumables.RestoreManaThreshold = config.PotionMpThreshold;
+        Consumables.HealItems.Clear();
+        Consumables.HealItems.AddRange(config.HealItems);
+        Consumables.ManaItems.Clear();
+        Consumables.ManaItems.AddRange(config.ManaItems);
+
+        Trash.TrashItems.Clear();
+        Trash.TrashItems.AddRange(config.TrashItems);
+    }
+
+    /// <summary>Captures this client's current automation settings into <paramref name="config" />.</summary>
+    public void CaptureConfigInto(AutomationConfig config)
+    {
+        config.HealThreshold = Support.HealHealthThreshold;
+        config.Buffs = Support.Buffs.ToList();
+        config.PotionHpThreshold = Consumables.HealHealthThreshold;
+        config.PotionMpThreshold = Consumables.RestoreManaThreshold;
+        config.HealItems = Consumables.HealItems.ToList();
+        config.ManaItems = Consumables.ManaItems.ToList();
+        config.TrashItems = Trash.TrashItems.ToList();
+    }
+
+    /// <summary>Persists this client's automation settings to disk.</summary>
+    public void SaveConfig() => Client.SaveAutomationConfig();
 }

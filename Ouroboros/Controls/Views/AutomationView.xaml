@@ -100,5 +100,11 @@
                        VerticalAlignment="Center"
                        Margin="12,0,0,0" />
         </StackPanel>
+
+        <Button Content="Save settings"
+                Click="SaveButton_Click"
+                Style="{StaticResource MaterialDesignPaperButton}"
+                HorizontalAlignment="Left"
+                Margin="0,14,0,0" />
     </StackPanel>
 </UserControl>
