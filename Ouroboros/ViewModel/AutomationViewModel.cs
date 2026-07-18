@@ -44,6 +44,27 @@ public sealed class AutomationViewModel : NotifyPropertyChangedBase
         set => Toggle(client => client.Bot.Trash.Enabled = value, value);
     }
 
+    /// <summary>Support heals when HP is at or below this percent.</summary>
+    public int HealThreshold
+    {
+        get => _client?.Bot.Support.HealHealthThreshold ?? 0;
+        set => SetThreshold(client => client.Bot.Support.HealHealthThreshold = value);
+    }
+
+    /// <summary>Consumables use a healing item when HP is at or below this percent.</summary>
+    public int PotionHpThreshold
+    {
+        get => _client?.Bot.Consumables.HealHealthThreshold ?? 0;
+        set => SetThreshold(client => client.Bot.Consumables.HealHealthThreshold = value);
+    }
+
+    /// <summary>Consumables use a mana item when MP is at or below this percent.</summary>
+    public int PotionMpThreshold
+    {
+        get => _client?.Bot.Consumables.RestoreManaThreshold ?? 0;
+        set => SetThreshold(client => client.Bot.Consumables.RestoreManaThreshold = value);
+    }
+
     /// <summary>Re-points the toggles at <paramref name="client" /> (or nothing) and refreshes their state.</summary>
     public void Bind(DarkAgesClient? client)
     {
@@ -54,6 +75,17 @@ public sealed class AutomationViewModel : NotifyPropertyChangedBase
         OnPropertyChanged(nameof(Consumables));
         OnPropertyChanged(nameof(Loot));
         OnPropertyChanged(nameof(Trash));
+        OnPropertyChanged(nameof(HealThreshold));
+        OnPropertyChanged(nameof(PotionHpThreshold));
+        OnPropertyChanged(nameof(PotionMpThreshold));
+    }
+
+    private void SetThreshold(Action<DarkAgesClient> apply)
+    {
+        if (_client is null)
+            return;
+
+        apply(_client);
     }
 
     private void Toggle(Action<DarkAgesClient> apply, bool enabling)

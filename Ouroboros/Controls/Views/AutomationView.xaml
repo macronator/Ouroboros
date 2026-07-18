@@ -40,12 +40,47 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal"
+                    Margin="24,0,0,6">
+            <TextBlock Text="heal at HP ≤"
+                       VerticalAlignment="Center"
+                       Opacity="0.75" />
+            <TextBox Text="{Binding HealThreshold}"
+                     Width="44"
+                     Margin="6,0,2,0"
+                     VerticalAlignment="Center" />
+            <TextBlock Text="%"
+                       VerticalAlignment="Center"
+                       Opacity="0.75" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal"
                     Margin="0,6">
             <CheckBox Style="{StaticResource MaterialDesignSwitchAccentToggleButton}"
                       IsChecked="{Binding Consumables}" />
             <TextBlock Text="Consumable auto-use (potions / mana)"
                        VerticalAlignment="Center"
                        Margin="12,0,0,0" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal"
+                    Margin="24,0,0,6">
+            <TextBlock Text="HP potion at ≤"
+                       VerticalAlignment="Center"
+                       Opacity="0.75" />
+            <TextBox Text="{Binding PotionHpThreshold}"
+                     Width="44"
+                     Margin="6,0,12,0"
+                     VerticalAlignment="Center" />
+            <TextBlock Text="% · MP item at ≤"
+                       VerticalAlignment="Center"
+                       Opacity="0.75" />
+            <TextBox Text="{Binding PotionMpThreshold}"
+                     Width="44"
+                     Margin="6,0,2,0"
+                     VerticalAlignment="Center" />
+            <TextBlock Text="%"
+                       VerticalAlignment="Center"
+                       Opacity="0.75" />
         </StackPanel>
 
         <StackPanel Orientation="Horizontal"
