@@ -162,5 +162,13 @@ public static partial class UnsafeNativeMethods
     [LibraryImport("user32.dll")]
     public static partial uint MapVirtualKey(uint uCode, uint uMapType);
 
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool RegisterHotKey(nint hWnd, int id, uint fsModifiers, uint vk);
+
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool UnregisterHotKey(nint hWnd, int id);
+
     #endregion
 }
