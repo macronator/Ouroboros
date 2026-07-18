@@ -40,6 +40,8 @@ public sealed class BotContext
         Engine.Register(Loot);
         Trash = new TrashRoutine();
         Engine.Register(Trash);
+        NpcScript = new NpcScriptRunner();
+        Engine.Register(NpcScript);
         Commands = new SlashCommandInterpreter();
         DefaultCommands.Register(Commands);
         Npc = new NpcSession(client);
@@ -47,6 +49,9 @@ public sealed class BotContext
 
     /// <summary>Drives the NPC dialog/menu the client currently has open.</summary>
     public NpcSession Npc { get; }
+
+    /// <summary>Runs scripted NPC interactions (banking / vendoring / quests) through <see cref="Npc" />.</summary>
+    public NpcScriptRunner NpcScript { get; }
 
     /// <summary>The attached game window (process handle, memory stream, patch surface), or null if none.</summary>
     public DaWindow? Window => Client.DaWindow;

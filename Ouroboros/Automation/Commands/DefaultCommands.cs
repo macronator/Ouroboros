@@ -306,6 +306,35 @@ public static class DefaultCommands
             context.Reply(chosen ? $"picked {args.Raw}" : "no matching option");
         });
 
+        interpreter.Register("npc", "run an NPC script: /npc pursue Bank; pick 1; next; close", (context, args) =>
+        {
+            if (args.Raw.Length == 0)
+            {
+                context.Reply("usage: /npc <step>; <step>; …   verbs: pursue <id|text>, pick <n|text>, next, close");
+
+                return;
+            }
+
+            var steps = ParseNpcScript(args.Raw);
+
+            if (steps.Count == 0)
+            {
+                context.Reply("no valid steps");
+
+                return;
+            }
+
+            context.NpcScript.Run(steps);
+            context.Engine.Start();
+            context.Reply($"running {steps.Count}-step NPC script");
+        });
+
+        interpreter.Register("npcstop", "stop the running NPC script", (context, _) =>
+        {
+            context.NpcScript.Stop();
+            context.Reply("npc script stopped");
+        });
+
         interpreter.Register("pursue", "choose a menu pursuit: /pursue <id|text>", (context, args) =>
         {
             if (args.Raw.Length == 0)
@@ -419,5 +448,32 @@ public static class DefaultCommands
             items.Add(name);
             context.Reply($"{kind} item added: {name}");
         }
+    }
+
+    //parses "pursue Bank; pick 1; next; close" into steps; blank/unknown verbs are skipped
+    private static List<NpcStep> ParseNpcScript(string text)
+    {
+        var steps = new List<NpcStep>();
+
+        foreach (var raw in text.Split(';', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
+        {
+            var space = raw.IndexOf(' ');
+            var verb = (space < 0 ? raw : raw[..space]).ToLowerInvariant();
+            var arg = space < 0 ? string.Empty : raw[(space + 1)..].Trim();
+
+            NpcStep? step = verb switch
+            {
+                "pursue" => new NpcStep(NpcStepKind.Pursuit, arg),
+                "pick" or "option" => new NpcStep(NpcStepKind.Option, arg),
+                "next" => new NpcStep(NpcStepKind.Next),
+                "close" => new NpcStep(NpcStepKind.Close),
+                _ => null
+            };
+
+            if (step is not null)
+                steps.Add(step);
+        }
+
+        return steps;
     }
 }
