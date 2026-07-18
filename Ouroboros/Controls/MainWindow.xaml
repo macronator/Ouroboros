@@ -86,6 +86,9 @@
                 <TabItem Header="Inventory">
                     <views:InventoryView DataContext="{Binding Inventory}" />
                 </TabItem>
+                <TabItem Header="Skills">
+                    <views:SkillsView DataContext="{Binding Skills}" />
+                </TabItem>
                 <TabItem Header="Packet Console">
                     <views:PacketConsoleView DataContext="{Binding PacketConsole}" />
                 </TabItem>

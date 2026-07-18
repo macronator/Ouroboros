@@ -35,6 +35,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChangedBase
             PacketConsole.Bind(value?.Client);
             Waypoints.Bind(value?.Client);
             Inventory.Bind(value?.Client);
+            Skills.Bind(value?.Client);
             Thumbnail.Bind(value?.Client);
         }
     }
@@ -50,6 +51,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChangedBase
     public WaypointsViewModel Waypoints { get; } = new();
     public AutomationViewModel Automation { get; } = new();
     public InventoryViewModel Inventory { get; } = new();
+    public SkillsViewModel Skills { get; } = new();
     public ThumbnailViewModel Thumbnail { get; } = new();
 
     /// <summary>
@@ -87,6 +89,8 @@ public sealed class MainWindowViewModel : NotifyPropertyChangedBase
         Waypoints.Refresh();
         Inventory.Bind(SelectedClient?.Client);
         Inventory.Refresh();
+        Skills.Bind(SelectedClient?.Client);
+        Skills.Refresh();
         Thumbnail.Bind(SelectedClient?.Client);
 
         OnPropertyChanged(nameof(HasClients));
