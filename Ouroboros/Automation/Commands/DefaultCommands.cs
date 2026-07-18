@@ -320,6 +320,26 @@ public static class DefaultCommands
             context.Reply(chosen ? $"pursuing {args.Raw}" : "no matching pursuit / no menu open");
         });
 
+        interpreter.Register("key", "post a virtual-key press to the game window: /key <vkCode>", (context, args) =>
+        {
+            if (context.Input is not { } input)
+            {
+                context.Reply("no game window attached");
+
+                return;
+            }
+
+            if (!int.TryParse(args.Raw, out var virtualKey))
+            {
+                context.Reply("usage: /key <vkCode>");
+
+                return;
+            }
+
+            input.KeyPress(virtualKey);
+            context.Reply($"key {virtualKey} posted");
+        });
+
         interpreter.Register("hp", "show current vitals", (context, _) =>
         {
             var vitals = context.Vitals;

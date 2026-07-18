@@ -152,4 +152,15 @@ public static partial class UnsafeNativeMethods
     public static partial int SetForegroundWindow(int hWnd);
 
     #endregion
+
+    #region Input Simulation
+
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool PostMessage(nint hWnd, uint msg, nint wParam, nint lParam);
+
+    [LibraryImport("user32.dll")]
+    public static partial uint MapVirtualKey(uint uCode, uint uMapType);
+
+    #endregion
 }

@@ -8,6 +8,7 @@ using Ouroboros.Automation.Support;
 using Ouroboros.Automation.Walking;
 using Ouroboros.Client;
 using Ouroboros.Data.Meta;
+using Ouroboros.Memory;
 using Ouroboros.Model;
 using Ouroboros.Services.Managers;
 using Ouroboros.Services.Pathfinding;
@@ -46,6 +47,17 @@ public sealed class BotContext
 
     /// <summary>Drives the NPC dialog/menu the client currently has open.</summary>
     public NpcSession Npc { get; }
+
+    /// <summary>Posts keystrokes to this client's game window, or null if no window is attached yet.</summary>
+    public InputSender? Input
+    {
+        get
+        {
+            var handle = Client.DaWindow?.WindowHandle ?? nint.Zero;
+
+            return handle == nint.Zero ? null : new InputSender(handle);
+        }
+    }
 
     /// <summary>The automation loop manager for this client.</summary>
     public AutomationEngine Engine { get; }
