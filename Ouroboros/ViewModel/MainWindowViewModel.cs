@@ -34,6 +34,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChangedBase
             Automation.Bind(value?.Client);
             PacketConsole.Bind(value?.Client);
             Waypoints.Bind(value?.Client);
+            Thumbnail.Bind(value?.Client);
         }
     }
 
@@ -47,6 +48,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChangedBase
     public PacketConsoleViewModel PacketConsole { get; } = new();
     public WaypointsViewModel Waypoints { get; } = new();
     public AutomationViewModel Automation { get; } = new();
+    public ThumbnailViewModel Thumbnail { get; } = new();
 
     /// <summary>
     ///     Syncs the client rows with the live snapshot — updating existing rows in place and adding/removing
@@ -81,6 +83,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChangedBase
         PacketConsole.Refresh();
         Waypoints.Bind(SelectedClient?.Client);
         Waypoints.Refresh();
+        Thumbnail.Bind(SelectedClient?.Client);
 
         OnPropertyChanged(nameof(HasClients));
         OnPropertyChanged(nameof(StatusSummary));

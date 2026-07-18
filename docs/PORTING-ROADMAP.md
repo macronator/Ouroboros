@@ -139,11 +139,12 @@ The one missing piece everything else stands on.
   (applying the ±1 DialogId action offset the protocol needs) and SelectPursuit for menus, by id or
   matching text. Commands: `/dialog` (show), `/next` `/prev` `/close`, `/pick <n|text>`,
   `/pursue <id|text>`. Foundation for scripted banking/vendoring. (Text-entry dialogs: later.)
-- [~] Phase 6 — dual-use game-process layer (done: input simulation — `InputSender` + `/key`;
+- [x] Phase 6 — dual-use game-process layer (done: input simulation — `InputSender` + `/key`;
   global hotkey engine — Ctrl+Shift+F1..F6 toggle combat/support/consumables/loot/trash + panic
-  stop; owner memory/process surface on the existing `DaWindow` — `/pid`, `/patch <name>`, `/peek`.
-  Remaining: DWM thumbnail preview pane. Note: attach-to-running-client discovery via
-  GetExtendedTcpTable isn't needed here — Ouroboros launches the client and already holds its handle.)
+  stop; owner memory/process surface on the existing `DaWindow` — `/pid`, `/patch <name>`, `/peek`;
+  DWM thumbnail preview pane — the Preview tab mirrors the selected client's window. Note:
+  attach-to-running-client discovery via GetExtendedTcpTable isn't needed here — Ouroboros launches
+  the client and already holds its handle.)
 - [x] NPC script runner (`Automation/NpcScriptRunner.cs` + `NpcStep`): scripted banking/vendoring/
   quests over the NPC session. Each step retries until its matching dialog/menu is open — so it waits
   out the server's request/response round-trips without hard-coded delays — with a per-step timeout.

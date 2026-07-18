@@ -1,0 +1,22 @@
+<UserControl x:Class="Ouroboros.Controls.Views.ThumbnailHostView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModel="clr-namespace:Ouroboros.ViewModel"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=viewModel:ThumbnailViewModel, IsDesignTimeCreatable=True}"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
+
+    <Grid Margin="8">
+        <!-- The DWM thumbnail is composited over this region; the hint shows through only when nothing is mirrored. -->
+        <Border x:Name="PreviewRegion"
+                Background="#22000000"
+                CornerRadius="4" />
+        <TextBlock Text="No client window to preview. Launch a client to mirror it here."
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Opacity="0.6" />
+    </Grid>
+</UserControl>

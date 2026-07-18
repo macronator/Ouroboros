@@ -89,6 +89,9 @@
                 <TabItem Header="Waypoints">
                     <views:WaypointsView DataContext="{Binding Waypoints}" />
                 </TabItem>
+                <TabItem Header="Preview">
+                    <views:ThumbnailHostView DataContext="{Binding Thumbnail}" />
+                </TabItem>
             </TabControl>
         </Grid>
     </materialDesign:DrawerHost>
