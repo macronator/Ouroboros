@@ -34,6 +34,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChangedBase
             Automation.Bind(value?.Client);
             PacketConsole.Bind(value?.Client);
             Waypoints.Bind(value?.Client);
+            Inventory.Bind(value?.Client);
             Thumbnail.Bind(value?.Client);
         }
     }
@@ -48,6 +49,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChangedBase
     public PacketConsoleViewModel PacketConsole { get; } = new();
     public WaypointsViewModel Waypoints { get; } = new();
     public AutomationViewModel Automation { get; } = new();
+    public InventoryViewModel Inventory { get; } = new();
     public ThumbnailViewModel Thumbnail { get; } = new();
 
     /// <summary>
@@ -83,6 +85,8 @@ public sealed class MainWindowViewModel : NotifyPropertyChangedBase
         PacketConsole.Refresh();
         Waypoints.Bind(SelectedClient?.Client);
         Waypoints.Refresh();
+        Inventory.Bind(SelectedClient?.Client);
+        Inventory.Refresh();
         Thumbnail.Bind(SelectedClient?.Client);
 
         OnPropertyChanged(nameof(HasClients));

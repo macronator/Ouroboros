@@ -83,6 +83,9 @@
                 <TabItem Header="Automation">
                     <views:AutomationView DataContext="{Binding Automation}" />
                 </TabItem>
+                <TabItem Header="Inventory">
+                    <views:InventoryView DataContext="{Binding Inventory}" />
+                </TabItem>
                 <TabItem Header="Packet Console">
                     <views:PacketConsoleView DataContext="{Binding PacketConsole}" />
                 </TabItem>
