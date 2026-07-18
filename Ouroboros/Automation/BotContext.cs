@@ -48,6 +48,9 @@ public sealed class BotContext
     /// <summary>Drives the NPC dialog/menu the client currently has open.</summary>
     public NpcSession Npc { get; }
 
+    /// <summary>The attached game window (process handle, memory stream, patch surface), or null if none.</summary>
+    public DaWindow? Window => Client.DaWindow;
+
     /// <summary>Posts keystrokes to this client's game window, or null if no window is attached yet.</summary>
     public InputSender? Input
     {

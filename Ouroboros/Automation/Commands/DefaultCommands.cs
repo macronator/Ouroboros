@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.IO;
 using Ouroboros.Automation.Walking;
 using Ouroboros.Defintions;
 
@@ -338,6 +340,57 @@ public static class DefaultCommands
 
             input.KeyPress(virtualKey);
             context.Reply($"key {virtualKey} posted");
+        });
+
+        interpreter.Register("pid", "show the attached client's process id and window handle", (context, _) =>
+            context.Reply(context.Window is { } window
+                ? $"pid {window.Process.Id}  hwnd 0x{window.WindowHandle:X}"
+                : "no game window attached"));
+
+        interpreter.Register("patch", "apply a memory edit by name: /patch <SkipLoadWall|ForceJumpIp|...>", (context, args) =>
+        {
+            if (context.Window is not { } window)
+            {
+                context.Reply("no game window attached");
+
+                return;
+            }
+
+            if (!Enum.TryParse<MemoryEditFlags>(args.Raw, ignoreCase: true, out var flag))
+            {
+                context.Reply("usage: /patch <SkipLoadWall|ForceJumpIp|OverwriteIp|OverwritePort|SkipIntro|ForceJumpInstanceCheck>");
+
+                return;
+            }
+
+            window.ApplyMemoryEdits(flag);
+            context.Reply($"applied {flag}");
+        });
+
+        interpreter.Register("peek", "read process memory: /peek <hexAddr> <count>", (context, args) =>
+        {
+            if (context.Window is not { } window)
+            {
+                context.Reply("no game window attached");
+
+                return;
+            }
+
+            if (args.Tokens.Count != 2
+                || !long.TryParse(args.Tokens[0], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var address)
+                || !int.TryParse(args.Tokens[1], out var count))
+            {
+                context.Reply("usage: /peek <hexAddr> <count>");
+
+                return;
+            }
+
+            count = Math.Clamp(count, 1, 256);
+            var buffer = new byte[count];
+            window.Pms.Seek(address, SeekOrigin.Begin);
+            _ = window.Pms.Read(buffer, 0, count);
+
+            context.Reply(string.Join(' ', buffer.Select(value => value.ToString("X2"))));
         });
 
         interpreter.Register("hp", "show current vitals", (context, _) =>
