@@ -33,6 +33,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChangedBase
 
             Automation.Bind(value?.Client);
             PacketConsole.Bind(value?.Client);
+            Waypoints.Bind(value?.Client);
         }
     }
 
@@ -75,6 +76,8 @@ public sealed class MainWindowViewModel : NotifyPropertyChangedBase
         Automation.Bind(SelectedClient?.Client);
         PacketConsole.Bind(SelectedClient?.Client);
         PacketConsole.Refresh();
+        Waypoints.Bind(SelectedClient?.Client);
+        Waypoints.Refresh();
 
         OnPropertyChanged(nameof(HasClients));
         OnPropertyChanged(nameof(StatusSummary));

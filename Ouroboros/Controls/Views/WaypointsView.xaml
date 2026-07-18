@@ -3,19 +3,129 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:viewModel="clr-namespace:Ouroboros.ViewModel"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=viewModel:WaypointsViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="450"
              d:DesignWidth="800">
 
-    <StackPanel Margin="20">
-        <TextBlock Text="{Binding Title}"
-                   FontSize="16"
-                   FontWeight="Bold"
-                   Margin="0,0,0,8" />
-        <TextBlock Text="{Binding Placeholder}"
-                   TextWrapping="Wrap"
-                   Opacity="0.7" />
-    </StackPanel>
+    <Grid Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Status line -->
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal"
+                    Margin="0,0,0,6">
+            <TextBlock Text="{Binding WalkerState}"
+                       VerticalAlignment="Center"
+                       Margin="0,0,16,0" />
+            <TextBlock Text="{Binding Status}"
+                       VerticalAlignment="Center"
+                       Opacity="0.7" />
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1.4*" />
+                <ColumnDefinition Width="1.2*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Routes -->
+            <DockPanel Grid.Column="0"
+                       Margin="0,0,8,0">
+                <TextBlock DockPanel.Dock="Top"
+                           Text="Saved routes"
+                           FontWeight="Bold"
+                           Margin="0,0,0,4" />
+                <WrapPanel DockPanel.Dock="Bottom"
+                           Margin="0,4,0,0">
+                    <Button Content="Load"
+                            Click="LoadRouteButton_Click"
+                            Style="{StaticResource MaterialDesignPaperButton}"
+                            Margin="0,0,4,4" />
+                    <Button Content="Delete"
+                            Click="DeleteRouteButton_Click"
+                            Style="{StaticResource MaterialDesignPaperButton}"
+                            Margin="0,0,4,4" />
+                </WrapPanel>
+                <ListBox x:Name="RoutesList"
+                         ItemsSource="{Binding Routes}" />
+            </DockPanel>
+
+            <!-- Waypoint editor -->
+            <DockPanel Grid.Column="1"
+                       Margin="0,0,8,0">
+                <TextBox DockPanel.Dock="Top"
+                         Text="{Binding RouteName, UpdateSourceTrigger=PropertyChanged}"
+                         materialDesign:HintAssist.Hint="route name"
+                         Margin="0,0,0,4" />
+                <WrapPanel DockPanel.Dock="Top"
+                           Margin="0,0,0,4">
+                    <CheckBox Content="Loop"
+                              IsChecked="{Binding Loop}"
+                              VerticalAlignment="Center"
+                              Margin="0,0,12,0" />
+                    <TextBlock Text="Proximity"
+                               VerticalAlignment="Center"
+                               Margin="0,0,4,0" />
+                    <TextBox Text="{Binding Proximity}"
+                             Width="40"
+                             VerticalAlignment="Center" />
+                </WrapPanel>
+                <WrapPanel DockPanel.Dock="Bottom"
+                           Margin="0,4,0,0">
+                    <Button Content="New"
+                            Click="NewRouteButton_Click"
+                            Style="{StaticResource MaterialDesignPaperButton}"
+                            Margin="0,0,4,4" />
+                    <Button Content="Save"
+                            Click="SaveRouteButton_Click"
+                            Style="{StaticResource MaterialDesignPaperButton}"
+                            Margin="0,0,4,4" />
+                    <Button Content="Add here"
+                            Click="AddWaypointButton_Click"
+                            Style="{StaticResource MaterialDesignPaperButton}"
+                            Margin="0,0,4,4" />
+                    <Button Content="Remove"
+                            Click="RemoveWaypointButton_Click"
+                            Style="{StaticResource MaterialDesignPaperButton}"
+                            Margin="0,0,4,4" />
+                    <Button Content="Walk"
+                            Click="WalkButton_Click"
+                            Style="{StaticResource MaterialDesignRaisedButton}"
+                            Margin="0,0,4,4" />
+                    <Button Content="Stop"
+                            Click="StopButton_Click"
+                            Style="{StaticResource MaterialDesignPaperButton}"
+                            Margin="0,0,4,4" />
+                </WrapPanel>
+                <ListBox x:Name="WaypointsList"
+                         ItemsSource="{Binding Waypoints}"
+                         FontFamily="Consolas" />
+            </DockPanel>
+
+            <!-- Current-map warps -->
+            <DockPanel Grid.Column="2">
+                <TextBlock DockPanel.Dock="Top"
+                           Text="Warps on this map"
+                           FontWeight="Bold"
+                           Margin="0,0,0,4" />
+                <Button DockPanel.Dock="Bottom"
+                        Content="Remove warp"
+                        Click="RemoveWarpButton_Click"
+                        Style="{StaticResource MaterialDesignPaperButton}"
+                        HorizontalAlignment="Left"
+                        Margin="0,4,0,0" />
+                <ListBox x:Name="WarpsList"
+                         ItemsSource="{Binding Warps}"
+                         FontFamily="Consolas"
+                         DisplayMemberPath="Summary" />
+            </DockPanel>
+        </Grid>
+    </Grid>
 </UserControl>

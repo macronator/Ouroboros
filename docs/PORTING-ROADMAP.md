@@ -96,9 +96,10 @@ The one missing piece everything else stands on.
   hex), capture toggle, clear, and a craft box that injects toward client/server)
 - [x] Phase 2 — skills/spells + cooldowns (done: SkillBook/SpellBook populated
   from pane + cooldown packets; ready-state + buff-active tracking)
-- [~] Phase 3 — waypoint + walking bot (done: Waypoint/route model, persistence,
-  intra-map A* walker, and inter-map traversal via warp/gate/field transition
-  tiles resolved from WorldMeta; waypoint editor UI still pending)
+- [x] Phase 3 — waypoint + walking bot (done: Waypoint/route model, persistence,
+  intra-map A* walker, inter-map traversal via warp/gate/field transition tiles
+  resolved from WorldMeta, and the Waypoints tab — route editor + walk/stop + the
+  auto-learned warp list)
 - [x] Phase 4 — chat slash-commands (done: interpreter hooked into public-message
   handler, replies injected to client; starter set /help /where /skills /spells
   /goto /stop /start — more verbs can be layered on)
@@ -122,7 +123,8 @@ The one missing piece everything else stands on.
   - **Automation** — two-way toggles for combat/support/consumables on the selected client.
   - **Packet Console** — live packet log (time, direction, opcode name, hex) polled from the
     per-client `PacketConsole`, with a capture toggle, clear, and a craft box that injects.
-  - **Waypoints** — scaffolded UserControl + view-model, ready to fill in.
+  - **Waypoints** — route editor (saved `.route` files: new/load/save/delete, add-here/remove
+    waypoints, loop + proximity, walk/stop) plus the current-map auto-learned warp list with remove.
 - [x] Auto-loot (`Automation/Looting/LootRoutine.cs`): walks to the nearest wanted ground drop and
   picks it into the first free inventory slot — one pickup grabs gold or item alike. Ground drops carry
   no name (only a sprite), so filtering is by sprite whitelist/blacklist; yields movement to the walker.
