@@ -435,6 +435,33 @@ public static class DefaultCommands
             context.Reply($"HP {vitals.CurrentHp}/{vitals.MaximumHp} ({vitals.HealthPercent}%)  "
                           + $"MP {vitals.CurrentMp}/{vitals.MaximumMp} ({vitals.ManaPercent}%)");
         });
+
+        interpreter.Register("stats", "show gold, weight, exp and primary stats", (context, _) =>
+        {
+            var vitals = context.Vitals;
+
+            context.Reply($"Gold {vitals.Gold}  GP {vitals.GamePoints}  Wt {vitals.CurrentWeight}/{vitals.MaxWeight} ({vitals.WeightPercent}%)  "
+                          + $"Exp {vitals.TotalExp} (+{vitals.ToNextLevel})  "
+                          + $"Str {vitals.Str} Int {vitals.Int} Wis {vitals.Wis} Con {vitals.Con} Dex {vitals.Dex}  AC {vitals.Ac}");
+        });
+
+        interpreter.Register("status", "show active status effects (sleep/curse/blind/…)", (context, _) =>
+        {
+            var status = context.Status.Current;
+
+            context.Reply(status == Ouroboros.Defintions.ClientStatus.None
+                ? "no status effects"
+                : $"status: {status}  (walk={context.Status.CanWalk} cast={context.Status.CanCast})");
+        });
+
+        interpreter.Register("effects", "show active effect icons", (context, _) =>
+        {
+            var snapshot = context.Effects.Snapshot();
+
+            context.Reply(snapshot.Count == 0
+                ? "no active effects"
+                : "effects: " + string.Join(", ", snapshot.Select(effect => effect.Name ?? $"#{effect.Icon}")));
+        });
     }
 
     //shared body for /healitem and /manaitem: no arg lists the set, otherwise adds a name (deduped)
