@@ -14,4 +14,12 @@ public sealed class AutomationConfig
     public List<string> ManaItems { get; set; } = [];
     public List<string> TrashItems { get; set; } = [];
     public List<string> Buffs { get; set; } = [];
+
+    //Crasher combo config — names/threshold persist, but NOT its enabled flag (a self-damage routine
+    //must never auto-arm on login; the operator re-enables it each session after a deliberate check).
+    public List<string> CrasherExecuteSkills { get; set; } = [];
+    public List<string> CrasherPreBuffSkills { get; set; } = [];
+    public string? CrasherSelfDamageSkill { get; set; }
+    public string? CrasherSelfDamageItem { get; set; }
+    public int CrasherHpThreshold { get; set; } = 1;
 }

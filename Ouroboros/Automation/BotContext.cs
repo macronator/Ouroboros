@@ -202,6 +202,15 @@ public sealed class BotContext
 
         Trash.TrashItems.Clear();
         Trash.TrashItems.AddRange(config.TrashItems);
+
+        //Crasher names/threshold only — never its Enabled flag (self-damage routine must not auto-arm)
+        Crasher.ExecuteSkills.Clear();
+        Crasher.ExecuteSkills.AddRange(config.CrasherExecuteSkills);
+        Crasher.PreBuffSkills.Clear();
+        Crasher.PreBuffSkills.AddRange(config.CrasherPreBuffSkills);
+        Crasher.SelfDamageSkill = config.CrasherSelfDamageSkill;
+        Crasher.SelfDamageItem = config.CrasherSelfDamageItem;
+        Crasher.HpThreshold = config.CrasherHpThreshold;
     }
 
     /// <summary>Captures this client's current automation settings into <paramref name="config" />.</summary>
@@ -214,6 +223,12 @@ public sealed class BotContext
         config.HealItems = Consumables.HealItems.ToList();
         config.ManaItems = Consumables.ManaItems.ToList();
         config.TrashItems = Trash.TrashItems.ToList();
+
+        config.CrasherExecuteSkills = Crasher.ExecuteSkills.ToList();
+        config.CrasherPreBuffSkills = Crasher.PreBuffSkills.ToList();
+        config.CrasherSelfDamageSkill = Crasher.SelfDamageSkill;
+        config.CrasherSelfDamageItem = Crasher.SelfDamageItem;
+        config.CrasherHpThreshold = Crasher.HpThreshold;
     }
 
     /// <summary>Persists this client's automation settings to disk.</summary>
