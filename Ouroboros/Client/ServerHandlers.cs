@@ -537,6 +537,8 @@ public sealed class ServerHandlers
         var args = PacketSerializer.Deserialize<HealthBarArgs>(packet);
         serialized = args;
 
+        Client.EntityManager.UpdateHealth(args.SourceId, args.HealthPercent);
+
         return HandlerResult.Default;
     }
 

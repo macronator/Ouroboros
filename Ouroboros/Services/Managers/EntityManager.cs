@@ -211,6 +211,32 @@ public class EntityManager
             creature.Direction = direction;
     }
 
+    /// <summary>
+    ///     Applies a HealthBar (0x13) update to a tracked creature: clamps the percent, stamps last-shown, and
+    ///     counts a landed hit when the bar drops. Ignores the local player and unknown/non-creature ids. A
+    ///     percent of 0 marks the creature dead — existing target/prune paths already treat 0 as no-target.
+    /// </summary>
+    public void UpdateHealth(uint id, byte healthPercent)
+    {
+        using var @lock = Sync.Enter();
+
+        if (id == DarkAgesClient.Id)
+            return;
+
+        if (!Entities.TryGetValue(id, out var entity) || entity is not Creature creature)
+            return;
+
+        var clamped = healthPercent > 100 ? (byte)100 : healthPercent;
+        var previous = creature.HealthPercent;
+
+        creature.HealthPercent = clamped;
+        creature.Trackers.LastHealthShown = DateTime.UtcNow;
+
+        //a drop means damage landed (the server also sends 100 on first sight / after a heal)
+        if (clamped < previous)
+            creature.Trackers.Hits++;
+    }
+
     public void Remove(uint id)
     {
         using var @lock = Sync.Enter();

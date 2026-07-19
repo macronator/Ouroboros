@@ -14,6 +14,7 @@ public class CreatureTrackers : MapEntityTrackers
     public DateTime? LastAnimated { get; set; }
     public Animation? LastAnimation { get; set; }
     public DateTime? LastHealthShown { get; set; }
+    public int Hits { get; set; }
     public DateTime? LastBodyAnimated { get; set; }
     public BodyAnimation? LastBodyAnimation { get; set; }
     public Dictionary<ushort, DateTime> AnimationHistory { get; set; } = new();
