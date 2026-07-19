@@ -69,6 +69,7 @@ public sealed class DarkAgesClient : IEquatable<DarkAgesClient>
     public SelfState Vitals { get; }
     public EffectTracker Effects { get; }
     public StatusState Status { get; }
+    public StatsTracker Stats { get; }
     public Inventory Inventory { get; }
 
     /// <summary>The NPC dialog currently open on the client, or null. Updated from the DisplayDialog packet.</summary>
@@ -129,6 +130,7 @@ public sealed class DarkAgesClient : IEquatable<DarkAgesClient>
         Vitals.MailArrived += () => Bot.Reply("[Ouroboros] You have unread mail.");
         Effects = new EffectTracker();
         Status = new StatusState();
+        Stats = new StatsTracker();
 
         //drive the status bitmask from the reliable signals we have: the packet blind flag and curse chat
         Vitals.BlindChanged += blind => Status.SetOrClear(ClientStatus.Dall, blind);

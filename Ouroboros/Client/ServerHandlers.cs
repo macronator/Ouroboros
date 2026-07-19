@@ -646,6 +646,10 @@ public sealed class ServerHandlers
 
         Client.Vitals.Update(args);
 
+        //sample exp/gold only when this packet actually carried them, so the session baseline is real
+        if (args.StatUpdateType.HasFlag(StatUpdateType.ExpGold))
+            Client.Stats.Sample(Client.Vitals.TotalExp, Client.Vitals.Gold, Client.Vitals.GamePoints);
+
         return HandlerResult.Default;
     }
 

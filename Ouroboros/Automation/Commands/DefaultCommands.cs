@@ -462,6 +462,23 @@ public static class DefaultCommands
                 ? "no active effects"
                 : "effects: " + string.Join(", ", snapshot.Select(effect => effect.Name ?? $"#{effect.Icon}")));
         });
+
+        interpreter.Register("rates", "show session exp/gold per hour (arg 'reset' to restart)", (context, args) =>
+        {
+            if (string.Equals(args.Raw.Trim(), "reset", StringComparison.OrdinalIgnoreCase))
+            {
+                context.Stats.Reset();
+                context.Reply("session rates reset");
+
+                return;
+            }
+
+            var stats = context.Stats.Snapshot();
+
+            context.Reply($"in {stats.Elapsed:hh\\:mm\\:ss}:  Exp +{stats.ExpGained} ({stats.ExpPerHour}/hr)  "
+                          + $"Gold {stats.GoldGained:+#;-#;0} ({stats.GoldPerHour}/hr)  "
+                          + $"GP +{stats.GamePointsGained} ({stats.GamePointsPerHour}/hr)");
+        });
     }
 
     //shared body for /healitem and /manaitem: no arg lists the set, otherwise adds a name (deduped)

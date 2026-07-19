@@ -133,6 +133,9 @@ public sealed class BotContext
     /// <summary>The local player's active ClientStatus bitmask (sleep/curse/blind/…) with expiry sweep.</summary>
     public StatusState Status => Client.Status;
 
+    /// <summary>Session exp/gold/game-point gains and their per-hour rates.</summary>
+    public StatsTracker Stats => Client.Stats;
+
     /// <summary>The character's current server-confirmed position.</summary>
     public Point Position => Client.ServerPoint;
 
