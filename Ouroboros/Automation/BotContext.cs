@@ -176,6 +176,18 @@ public sealed class BotContext
         return true;
     }
 
+    /// <summary>Uses an inventory item by name if present. Returns whether the use was sent.</summary>
+    public bool UseItem(string name)
+    {
+        if (Inventory[name] is not { } item)
+            return false;
+
+        Server.SendItemUse(new ItemUseArgs { SourceSlot = item.Slot });
+        item.MarkUsed(DateTime.UtcNow);
+
+        return true;
+    }
+
     /// <summary>The persistent world graph (maps + warps) used for cross-map routing.</summary>
     public WorldMeta World => Client.WorldStorage.Value;
 

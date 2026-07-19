@@ -475,6 +475,18 @@ public static class DefaultCommands
             context.Reply(context.UseSkill(args.Raw) ? $"used {args.Raw}" : $"'{args.Raw}' unknown or on cooldown");
         });
 
+        interpreter.Register("useitem", "use an inventory item by name", (context, args) =>
+        {
+            if (args.Raw.Length == 0)
+            {
+                context.Reply("usage: /useitem <name>");
+
+                return;
+            }
+
+            context.Reply(context.UseItem(args.Raw) ? $"used {args.Raw}" : $"'{args.Raw}' not in inventory");
+        });
+
         interpreter.Register("crasher", "configure the Crasher execute combo — /crasher for usage", (context, args) =>
         {
             var crasher = context.Crasher;
