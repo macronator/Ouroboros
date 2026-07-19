@@ -463,6 +463,18 @@ public static class DefaultCommands
                 : "effects: " + string.Join(", ", snapshot.Select(effect => effect.Name ?? $"#{effect.Icon}")));
         });
 
+        interpreter.Register("useskill", "use a skill by name", (context, args) =>
+        {
+            if (args.Raw.Length == 0)
+            {
+                context.Reply("usage: /useskill <name>");
+
+                return;
+            }
+
+            context.Reply(context.UseSkill(args.Raw) ? $"used {args.Raw}" : $"'{args.Raw}' unknown or on cooldown");
+        });
+
         interpreter.Register("rates", "show session exp/gold per hour (arg 'reset' to restart)", (context, args) =>
         {
             if (string.Equals(args.Raw.Trim(), "reset", StringComparison.OrdinalIgnoreCase))

@@ -1,5 +1,6 @@
 using Chaos.Common.Definitions;
 using Chaos.Geometry;
+using Chaos.Networking.Entities.Client;
 using Chaos.Networking.Entities.Server;
 using Ouroboros.Automation.Combat;
 using Ouroboros.Automation.Events;
@@ -158,6 +159,17 @@ public sealed class BotContext
 
     /// <summary>Injects a multi-line message into the game client as a scroll window.</summary>
     public void ReplyWindow(string message) => Reply(message, ServerMessageType.ScrollWindow);
+
+    /// <summary>Uses a skill by name if it is known and off cooldown. Returns whether the use was sent.</summary>
+    public bool UseSkill(string name)
+    {
+        if (Skills[name] is not { } skill || !skill.IsReady)
+            return false;
+
+        Server.SendSkillUse(new SkillUseArgs { SourceSlot = skill.Slot });
+
+        return true;
+    }
 
     /// <summary>The persistent world graph (maps + warps) used for cross-map routing.</summary>
     public WorldMeta World => Client.WorldStorage.Value;
