@@ -134,8 +134,19 @@ public sealed class DarkAgesClient : IEquatable<DarkAgesClient>
         Vitals.BlindChanged += blind => Status.SetOrClear(ClientStatus.Dall, blind);
         Bot.Chat.Received += serverEvent =>
         {
-            if (serverEvent.Kind == ServerEventKind.CurseApplied)
-                Status.Set(ClientStatus.Cradh, SpellDurations.For("cradh"));
+            switch (serverEvent.Kind)
+            {
+                case ServerEventKind.CurseApplied:
+                    Status.Set(ClientStatus.Cradh, SpellDurations.For("cradh"));
+
+                    break;
+
+                //the server confirmed a cast — start that spell's buff-active window from the ack, not send time
+                case ServerEventKind.SpellCast when serverEvent.Capture is { Length: > 0 } spellName:
+                    SpellBook.MarkCast(spellName, DateTime.UtcNow);
+
+                    break;
+            }
         };
         Inventory = new Inventory();
         Temp = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);

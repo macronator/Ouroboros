@@ -90,6 +90,14 @@ public sealed class SpellBook
                 spell.MarkCast(utcNow);
     }
 
+    /// <summary>Records a cast against the spell with the given name — from the "You cast X" confirmation.</summary>
+    public void MarkCast(string name, DateTime utcNow)
+    {
+        lock (Gate)
+            if (ByName.TryGetValue(name, out var spell))
+                spell.MarkCast(utcNow);
+    }
+
     public void Clear()
     {
         lock (Gate)
