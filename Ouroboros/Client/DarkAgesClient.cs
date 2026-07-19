@@ -122,6 +122,7 @@ public sealed class DarkAgesClient : IEquatable<DarkAgesClient>
         SkillBook = new SkillBook();
         SpellBook = new SpellBook();
         Vitals = new SelfState();
+        Vitals.MailArrived += () => Bot.Reply("[Ouroboros] You have unread mail.");
         Inventory = new Inventory();
         Temp = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
