@@ -11,6 +11,8 @@ public sealed class ClientStatusViewModel : NotifyPropertyChangedBase
 {
     private string _name = "(character unknown)";
     private string _vitals = "-";
+    private string _stats = "-";
+    private string _status = "-";
     private string _location = "-";
     private int _nearbyMonsters;
     private int _skillCount;
@@ -32,6 +34,8 @@ public sealed class ClientStatusViewModel : NotifyPropertyChangedBase
 
     public string Name { get => _name; private set => SetField(ref _name, value); }
     public string Vitals { get => _vitals; private set => SetField(ref _vitals, value); }
+    public string Stats { get => _stats; private set => SetField(ref _stats, value); }
+    public string Status { get => _status; private set => SetField(ref _status, value); }
     public string Location { get => _location; private set => SetField(ref _location, value); }
     public int NearbyMonsters { get => _nearbyMonsters; private set => SetField(ref _nearbyMonsters, value); }
     public int SkillCount { get => _skillCount; private set => SetField(ref _skillCount, value); }
@@ -56,6 +60,17 @@ public sealed class ClientStatusViewModel : NotifyPropertyChangedBase
         Name = Client.Aisling?.Name ?? "(character unknown)";
         Vitals = $"HP {vitals.CurrentHp}/{vitals.MaximumHp} ({vitals.HealthPercent}%)   "
                  + $"MP {vitals.CurrentMp}/{vitals.MaximumMp} ({vitals.ManaPercent}%)";
+
+        var rates = Client.Stats.Snapshot();
+        Stats = $"Gold {vitals.Gold}   Wt {vitals.CurrentWeight}/{vitals.MaxWeight} ({vitals.WeightPercent}%)   "
+                + $"Exp {rates.ExpPerHour}/hr   Gold {rates.GoldPerHour}/hr";
+
+        var active = Client.Status.Current;
+        var effects = Client.Effects.Count;
+        Status = active == Ouroboros.Defintions.ClientStatus.None
+            ? effects == 0 ? "no status" : $"{effects} effect(s)"
+            : $"{active}" + (effects > 0 ? $"   ({effects} effect(s))" : string.Empty);
+
         Location = $"{map?.Name ?? "-"} [{map?.Id.ToString() ?? "-"}] @ ({position.X}, {position.Y})";
         NearbyMonsters = Client.EntityManager.GetNearbyMonsters(null).Count;
         SkillCount = Client.SkillBook.Snapshot().Count;
@@ -74,6 +89,8 @@ public sealed class ClientStatusViewModel : NotifyPropertyChangedBase
         {
             Name = "Sample Aisling",
             Vitals = "HP 950/1000 (95%)   MP 400/500 (80%)",
+            Stats = "Gold 1200450   Wt 42/85 (49%)   Exp 1350000/hr   Gold 42000/hr",
+            Status = "Armachd, Dion   (2 effect(s))",
             Location = "Mileth [500] @ (12, 9)",
             NearbyMonsters = 3,
             SkillCount = 6,

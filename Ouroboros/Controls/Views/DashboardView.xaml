@@ -37,6 +37,12 @@
                                 <TextBlock Text="{Binding Vitals}"
                                            FontFamily="Consolas"
                                            Margin="0,4,0,0" />
+                                <TextBlock Text="{Binding Stats}"
+                                           FontFamily="Consolas"
+                                           Opacity="0.85" />
+                                <TextBlock Text="{Binding Status}"
+                                           FontFamily="Consolas"
+                                           Opacity="0.85" />
                                 <TextBlock Text="{Binding Location}"
                                            FontFamily="Consolas" />
                                 <WrapPanel Margin="0,6,0,0">
