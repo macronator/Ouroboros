@@ -8,7 +8,9 @@ using Chaos.Packets;
 using Chaos.Packets.Abstractions;
 using Ouroboros.Abstractions;
 using Ouroboros.Automation;
+using Ouroboros.Automation.Events;
 using Ouroboros.Data;
+using Ouroboros.Defintions;
 using Ouroboros.Data.Meta;
 using Ouroboros.Memory;
 using Ouroboros.Model;
@@ -66,6 +68,7 @@ public sealed class DarkAgesClient : IEquatable<DarkAgesClient>
     public SpellBook SpellBook { get; }
     public SelfState Vitals { get; }
     public EffectTracker Effects { get; }
+    public StatusState Status { get; }
     public Inventory Inventory { get; }
 
     /// <summary>The NPC dialog currently open on the client, or null. Updated from the DisplayDialog packet.</summary>
@@ -125,6 +128,15 @@ public sealed class DarkAgesClient : IEquatable<DarkAgesClient>
         Vitals = new SelfState();
         Vitals.MailArrived += () => Bot.Reply("[Ouroboros] You have unread mail.");
         Effects = new EffectTracker();
+        Status = new StatusState();
+
+        //drive the status bitmask from the reliable signals we have: the packet blind flag and curse chat
+        Vitals.BlindChanged += blind => Status.SetOrClear(ClientStatus.Dall, blind);
+        Bot.Chat.Received += serverEvent =>
+        {
+            if (serverEvent.Kind == ServerEventKind.CurseApplied)
+                Status.Set(ClientStatus.Cradh, SpellDurations.For("cradh"));
+        };
         Inventory = new Inventory();
         Temp = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 

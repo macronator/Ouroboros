@@ -56,6 +56,9 @@ public sealed class SelfState
     /// <summary>Raised on the false→true edge of unread mail — fire an in-client alert (not email).</summary>
     public event Action? MailArrived;
 
+    /// <summary>Raised when the blind flag changes (drives the Dall status bit).</summary>
+    public event Action<bool>? BlindChanged;
+
     /// <summary>Current HP as a 0-100 percent (100 when max is unknown).</summary>
     public int HealthPercent => MaximumHp == 0 ? 100 : (int)(CurrentHp * 100 / MaximumHp);
 
@@ -100,6 +103,8 @@ public sealed class SelfState
 
         if (type.HasFlag(StatUpdateType.Secondary))
         {
+            var wasBlind = Blind;
+
             Ac = args.Ac;
             Dmg = args.Dmg;
             Hit = args.Hit;
@@ -107,6 +112,9 @@ public sealed class SelfState
             Blind = args.Blind;
             OffenseElement = args.OffenseElement;
             DefenseElement = args.DefenseElement;
+
+            if (Blind != wasBlind)
+                BlindChanged?.Invoke(Blind);
         }
 
         if (type.HasFlag(StatUpdateType.ExpGold))

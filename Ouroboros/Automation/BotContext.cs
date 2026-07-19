@@ -130,6 +130,9 @@ public sealed class BotContext
     /// <summary>The local player's active status-effect icons, updated from the Effect packet.</summary>
     public EffectTracker Effects => Client.Effects;
 
+    /// <summary>The local player's active ClientStatus bitmask (sleep/curse/blind/…) with expiry sweep.</summary>
+    public StatusState Status => Client.Status;
+
     /// <summary>The character's current server-confirmed position.</summary>
     public Point Position => Client.ServerPoint;
 
