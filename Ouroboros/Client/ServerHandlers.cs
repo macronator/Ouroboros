@@ -252,6 +252,9 @@ public sealed class ServerHandlers
         var args = PacketSerializer.Deserialize<EffectArgs>(packet);
         serialized = args;
 
+        //a coloured effect is active (colour is a coarse time band); EffectColor.None clears it
+        Client.Effects.Apply(args.EffectIcon, args.EffectColor != EffectColor.None);
+
         return HandlerResult.Default;
     }
 

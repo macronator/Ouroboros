@@ -127,6 +127,9 @@ public sealed class BotContext
     /// <summary>The character's vitals (HP/MP/level), updated from the Attributes packet.</summary>
     public SelfState Vitals => Client.Vitals;
 
+    /// <summary>The local player's active status-effect icons, updated from the Effect packet.</summary>
+    public EffectTracker Effects => Client.Effects;
+
     /// <summary>The character's current server-confirmed position.</summary>
     public Point Position => Client.ServerPoint;
 

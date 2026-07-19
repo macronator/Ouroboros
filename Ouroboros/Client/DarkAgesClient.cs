@@ -65,6 +65,7 @@ public sealed class DarkAgesClient : IEquatable<DarkAgesClient>
     public SkillBook SkillBook { get; }
     public SpellBook SpellBook { get; }
     public SelfState Vitals { get; }
+    public EffectTracker Effects { get; }
     public Inventory Inventory { get; }
 
     /// <summary>The NPC dialog currently open on the client, or null. Updated from the DisplayDialog packet.</summary>
@@ -123,6 +124,7 @@ public sealed class DarkAgesClient : IEquatable<DarkAgesClient>
         SpellBook = new SpellBook();
         Vitals = new SelfState();
         Vitals.MailArrived += () => Bot.Reply("[Ouroboros] You have unread mail.");
+        Effects = new EffectTracker();
         Inventory = new Inventory();
         Temp = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
