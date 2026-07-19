@@ -2,6 +2,7 @@ using Chaos.Common.Definitions;
 using Chaos.Geometry;
 using Chaos.Networking.Entities.Server;
 using Ouroboros.Automation.Combat;
+using Ouroboros.Automation.Events;
 using Ouroboros.Automation.Commands;
 using Ouroboros.Automation.Looting;
 using Ouroboros.Automation.Support;
@@ -46,7 +47,11 @@ public sealed class BotContext
         Commands = new SlashCommandInterpreter();
         DefaultCommands.Register(Commands);
         Npc = new NpcSession(client);
+        Chat = new ServerTextRouter(this);
     }
+
+    /// <summary>Passive event bus over inbound server/chat text (bot-check panic, cast-confirm, curse, durability…).</summary>
+    public ServerTextRouter Chat { get; }
 
     /// <summary>Drives the NPC dialog/menu the client currently has open.</summary>
     public NpcSession Npc { get; }

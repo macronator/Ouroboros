@@ -585,6 +585,8 @@ public sealed class ServerHandlers
         var args = PacketSerializer.Deserialize<DisplayPublicMessageArgs>(packet);
         serialized = args;
 
+        Client.Bot.Chat.IngestPublic(args.Message);
+
         return HandlerResult.Default;
     }
 
@@ -626,6 +628,8 @@ public sealed class ServerHandlers
     {
         var args = PacketSerializer.Deserialize<ServerMessageArgs>(packet);
         serialized = args;
+
+        Client.Bot.Chat.IngestSystem(args.Message);
 
         return HandlerResult.Default;
     }
