@@ -475,6 +475,87 @@ public static class DefaultCommands
             context.Reply(context.UseSkill(args.Raw) ? $"used {args.Raw}" : $"'{args.Raw}' unknown or on cooldown");
         });
 
+        interpreter.Register("crasher", "configure the Crasher execute combo — /crasher for usage", (context, args) =>
+        {
+            var crasher = context.Crasher;
+            var tokens = args.Tokens;
+            var sub = tokens.Count > 0 ? tokens[0].ToLowerInvariant() : "status";
+            var rest = tokens.Count > 1 ? string.Join(' ', tokens.Skip(1)) : string.Empty;
+
+            switch (sub)
+            {
+                case "status":
+                    context.Reply($"crasher {(crasher.Enabled ? "ON" : "off")}  hp<={crasher.HpThreshold}  "
+                                  + $"execute=[{string.Join(", ", crasher.ExecuteSkills)}]  buffs=[{string.Join(", ", crasher.PreBuffSkills)}]  "
+                                  + $"hurtSkill={crasher.SelfDamageSkill ?? "-"}  hurtItem={crasher.SelfDamageItem ?? "-"}");
+
+                    break;
+
+                case "on" when crasher.ExecuteSkills.Count == 0:
+                    context.Reply("set an execute skill first: /crasher execute <name>");
+
+                    break;
+
+                case "on":
+                    crasher.Enabled = true;
+                    context.Engine.Start();
+                    context.Reply("crasher ON — it self-damages to ~1 HP; live-test carefully");
+
+                    break;
+
+                case "off":
+                    crasher.Enabled = false;
+                    context.Reply("crasher off");
+
+                    break;
+
+                case "execute" when rest.Length > 0:
+                    crasher.ExecuteSkills.Add(rest);
+                    context.Reply($"execute skill added: {rest}");
+
+                    break;
+
+                case "buff" when rest.Length > 0:
+                    crasher.PreBuffSkills.Add(rest);
+                    context.Reply($"pre-buff skill added: {rest}");
+
+                    break;
+
+                case "hurtskill":
+                    crasher.SelfDamageSkill = rest.Length > 0 ? rest : null;
+                    context.Reply($"self-damage skill = {crasher.SelfDamageSkill ?? "-"}");
+
+                    break;
+
+                case "hurtitem":
+                    crasher.SelfDamageItem = rest.Length > 0 ? rest : null;
+                    context.Reply($"self-damage item = {crasher.SelfDamageItem ?? "-"}");
+
+                    break;
+
+                case "hp" when int.TryParse(rest, out var hp):
+                    crasher.HpThreshold = Math.Max(1, hp);
+                    context.Reply($"hp threshold = {crasher.HpThreshold}");
+
+                    break;
+
+                case "clear":
+                    crasher.Enabled = false;
+                    crasher.ExecuteSkills.Clear();
+                    crasher.PreBuffSkills.Clear();
+                    crasher.SelfDamageSkill = null;
+                    crasher.SelfDamageItem = null;
+                    context.Reply("crasher config cleared");
+
+                    break;
+
+                default:
+                    context.Reply("usage: /crasher [status | on | off | execute <name> | buff <name> | hurtskill <name> | hurtitem <name> | hp <n> | clear]");
+
+                    break;
+            }
+        });
+
         interpreter.Register("rates", "show session exp/gold per hour (arg 'reset' to restart)", (context, args) =>
         {
             if (string.Equals(args.Raw.Trim(), "reset", StringComparison.OrdinalIgnoreCase))

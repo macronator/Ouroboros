@@ -35,6 +35,8 @@ public sealed class BotContext
         Engine.Register(Walker);
         Combat = new CombatRoutine();
         Engine.Register(Combat);
+        Crasher = new CrasherRoutine();
+        Engine.Register(Crasher);
         Support = new SupportRoutine();
         Engine.Register(Support);
         Consumables = new ItemRoutine();
@@ -82,6 +84,9 @@ public sealed class BotContext
 
     /// <summary>The combat auto-attacker (registered on the engine; off until enabled).</summary>
     public CombatRoutine Combat { get; }
+
+    /// <summary>The Crasher execute combo (self-damage → execute); inert until configured and enabled.</summary>
+    public CrasherRoutine Crasher { get; }
 
     /// <summary>The heal/buff support routine (registered on the engine; off until enabled).</summary>
     public SupportRoutine Support { get; }
